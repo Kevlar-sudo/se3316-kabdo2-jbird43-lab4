@@ -16,6 +16,7 @@ function connectToDatabase() {
       createTable(db);
       createTable2(db);
       createTable3(db);
+      createTable4(db);
       console.log("Connected to the new database successfully");
     });
     return db;
@@ -71,5 +72,23 @@ function createTable3(db){
   `
   );
 }
+
+//this database will store the user info, username and email will be stored as plaintext
+//while password will be hashed using npm bcript in the back-end
+//administrator status will be either 0 (standard user) or 1 (admin), default to standard user
+function createTable4(db){
+  db.exec(`
+  CREATE TABLE users
+  (
+  username                 VARCHAR(20),
+  email                    VARCHAR(20),
+  password                 VARCHAR(20),
+  administrator            CHAR(1) DEFAULT 0
+  )
+  `
+  );
+}
+
+
 //we connect to the database after creating it
 module.exports = connectToDatabase();
