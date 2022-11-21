@@ -148,7 +148,7 @@ function viewlist(){
     })
     )
 };
-//the function to 
+//the function to add a track to the db 
 function addTrack(){
     let input = document.getElementById("trackName").value
 
@@ -737,3 +737,44 @@ document.getElementById("sortLengthPlaylist").addEventListener('click',sortPlayl
       }
     }
   };
+
+  //the function to create a user to our db
+  //create new playlist front end WORKING
+function register(){
+
+  //verifying the name only has wanted characters
+  if(/[`~!@#$%^&*()|+\-=?;:..’“'"<>,€£¥•،٫؟»«\{\}\[\]\\\/]/.test(document.getElementById("username").value) !== false){
+    alert("Please only include Alphanumeric characters in the username");
+    return;
+  }
+  const newUser={
+    username: document.getElementById("username").value,
+    email: document.getElementById("email").value,
+    password: document.getElementById("password").value,
+    //currently admin status only 0 CHANGE later
+    administrator: 0
+}
+    console.log(newUser);
+    fetch("/api/users",{
+        method: 'POST',
+        headers: {'Content-type': 'application/json'},
+        body: JSON.stringify(newUser)
+    })
+    .then(res => {
+        if(res.ok){
+            res.json()
+            .then(data => {
+                console.log(data);
+                //add the new playlist to drop down list
+                alert("Successfully added new user");
+            })
+            .catch(err => console.log('Failed to get json object'))
+        }
+        else{
+            console.log('Error: ',res.status);
+            document.getElementById('status').innerText = 'Failed to add item';
+        }
+    })
+    .catch()
+    
+};

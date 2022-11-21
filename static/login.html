@@ -29,27 +29,29 @@
    <h4>Don't have an account? Register here:</h4>
 
    <h4>New Account </h4>
-     <form method = 'post' action = '/register'>
+     <form onsubmit="return register()">
 
        <br><label for= 'username'>Enter userame:  </label>
-       <input name = 'username' required></br>
+       <input name = 'username' id="username" required></br>
 
        <br><label for= 'email'>Enter email: </label>
-       <input name = 'email' type="email" required></br>
+       <input name = 'email' type="email" id="email" required></br>
        
        <br><label for= 'password'>Enter password: </label>
-       <input name = 'password' type = 'password' required></br>
+       <input name = 'password' type = 'password' id="password" required></br>
 
-       <br><label for= 'password'>Confirm password: </label>
-       <input name = 'password' type = 'password' required></br><br></br>
+       <br><label for= 'confirm_password'>Confirm password: </label>
+       <input name = 'confirm_password' type = 'password' required></br><br></br>
  
      
  
      <input type="submit"  value="Submit" name = "userSubmitTimes" id="loginSubmit">
  
    </form>
- 
-     </body>
+   
+   <div id="bottom">SE3316-Lab-4 By Kevin Abdo & Jack Bird ©</div>
+   <script defer src="script.js"></script>
+    </body>
    </centre>
    
  </html>
