@@ -435,7 +435,7 @@ router.route('/playlist/:name')
 
 //the backend for the users
 //currently in testing needs more work
-router.route('/users') //all the routes to the tracks
+router.route('/users') //all the routes to users
    
     
 //post req we can use this later for adding songs to the playlist (it worked for album before)
