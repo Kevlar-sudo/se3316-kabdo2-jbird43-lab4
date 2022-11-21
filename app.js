@@ -8,11 +8,11 @@ let sql;
 
 //for password encryption
 const bcrypt = require('bcrypt');
+//how many rounds of salt
 const saltRounds = 10;
-const myPlaintextPassword = 's0/\/\P4$$w0rD';
-const someOtherPlaintextPassword = 'not_bacon';
 
 
+//to store playlist variable noOfTracks and duration
 let myArr = {};
 let playlists = [];
 
@@ -323,7 +323,7 @@ router.route('/playlist')
     //add the playlist to our data structure
     
     //don't let the user delete any of these 3 playlists since they are protected (INPUT SANITIZATION)
-    if(playlist_name == "genres" || playlist_name =="artists" || playlist_name == "tracks"){
+    if(playlist_name == "genres" || playlist_name =="artists" || playlist_name == "tracks" || req.params.name == "users"){
         console.log("500 This database is protected and can't be deleted");
         return res.json({
             status: 500,
