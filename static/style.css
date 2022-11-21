@@ -11,14 +11,14 @@ h1{
     padding: 20px;
     background-color: cornsilk;
 }
-button{
+button, #loginSubmit{
     border-radius: 10px;
     border: 2px solid crimson;
     background-color: crimson;
     font-weight: bold;
     transition-duration: 0.4s;
 }
-button:hover{
+button:hover, #loginSubmit:hover{
     background-color: wheat;
 }
 .admin{

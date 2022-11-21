@@ -1,7 +1,7 @@
 <!--This is the page that the user is taken to when they click the "login" button"-->
 <html>
    <head>
-     <title>Doodle - Sign Up</title>
+     <title>SE3316 Database Login</title>
      <link rel="stylesheet" href="main.css" />
      <style>
      </style>
@@ -11,18 +11,41 @@
      <body id = "all">
  
        
-       <a href = 'index.html'><h1>Back to Homepage</h1></a>
+       <a href = 'index.html'><h2>Back to Homepage</h2></a>
  
-    <h3>Please enter your username and password </h3>
+    <h4>Please enter your username and password </h4>
      <form method = 'post' action = '/register'>
        <label for= 'username'>Enter userame:  </label>
        <input name = 'username' required>
        <br><br><label for= 'password'>Enter password: </label>
-       <input name = 'password' required></br></br>
+       <input name = 'password' type = 'password' required></br></br>
  
      
  
-     <input type="submit"  value="Submit" name = "userSubmitTimes">
+     <input type="submit"  value="Submit" name = "userSubmitTimes" id="loginSubmit">
+ 
+   </form>
+
+   <h4>Don't have an account? Register here:</h4>
+
+   <h4>New Account </h4>
+     <form method = 'post' action = '/register'>
+
+       <br><label for= 'username'>Enter userame:  </label>
+       <input name = 'username' required></br>
+
+       <br><label for= 'email'>Enter email: </label>
+       <input name = 'email' required></br>
+       
+       <br><label for= 'password'>Enter password: </label>
+       <input name = 'password' type = 'password' required></br>
+
+       <br><label for= 'password'>Confirm password: </label>
+       <input name = 'password' type = 'password' required></br><br></br>
+ 
+     
+ 
+     <input type="submit"  value="Submit" name = "userSubmitTimes" id="loginSubmit">
  
    </form>
  
