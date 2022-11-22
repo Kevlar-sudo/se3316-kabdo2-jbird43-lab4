@@ -454,40 +454,41 @@ router
 
 //the backend for the users
 //currently in testing needs more work
-router
-  .route("/users") //all the routes to the tracks
+router.route('/users') //all the routes to the tracks
+   
+    
+//post req we can use this later for adding songs to the playlist (it worked for album before)
+//only insert 0 or 1 for administrator (will have validation later)
+//need some password hashing for password
+.post((req,res)=>{
+    try{
+        const {username,email,password,administrator} = req.body;
+        
 
-  //post req we can use this later for adding songs to the playlist (it worked for album before)
-  //only insert 0 or 1 for administrator (will have validation later)
-  //need some password hashing for password
-  .post((req, res) => {
-    try {
-      const { username, email, password, administrator } = req.body;
+        //encrypting the password
+        bcrypt.genSalt(saltRounds, function(err, salt) {
+            bcrypt.hash(password, salt, function(err, hash) {
+                // Store hash in your password DB.
+                
+                sql = "INSERT INTO users(username,email,password,administrator) VALUES (?,?,?,?)";
+                db.run(sql,[username,email,hash,administrator], (err)=>{
+                    if(err) return res.json({status:300,success:false,error:err});
+        
+                    console.log("successful input");
+                })
+                return res.json({
+                    status: 200,
+                    success: true,
+                });
+            });
+        })
 
-      //encrypting the password
-      bcrypt.genSalt(saltRounds, function (err, salt) {
-        bcrypt.hash(password, salt, function (err, hash) {
-          // Store hash in your password DB.
-
-          sql =
-            "INSERT INTO users(username,email,password,administrator) VALUES (?,?,?,?)";
-          db.run(sql, [username, email, hash, administrator], (err) => {
-            if (err)
-              return res.json({ status: 300, success: false, error: err });
-
-            console.log("successful input");
-          });
-          return res.json({
-            status: 200,
-            success: true,
-          });
+    }catch (error){
+        return res.json({
+            status: 400,
+            success:false,
         });
-      });
-    } catch (error) {
-      return res.json({
-        status: 400,
-        success: false,
-      });
+
     }
   });
 
@@ -495,4 +496,4 @@ router
 app.use("/api", router);
 
 app.listen(3000);
-console.log("Listening on port 3000");
+console.log("Listening on port 3000")
