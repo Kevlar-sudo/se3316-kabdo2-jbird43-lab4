@@ -15,6 +15,7 @@ router.post('/register', async (req, res) => {
     const hashPassword = await bcrypt.hash(password, salt);
     let taken = false;
 
+    //Checking if username and email exist
     db.all(`SELECT username, email FROM users`, [], (err, rows) => {
         if (err) {
             throw err;
@@ -25,8 +26,9 @@ router.post('/register', async (req, res) => {
                 taken = true;
             }
         }
+        //If username or email already exists
         if (taken == true) {
-            return res.json({ status: 400, send: "Username and email already exist"})
+            return res.json({ status: 400, send: "Username and email already exist" })
         } else {
             try {
                 // insert one row into the langs table
@@ -43,6 +45,47 @@ router.post('/register', async (req, res) => {
             }
         }
     });
+
+});
+
+//Login
+router.post('/login', async (req, res) => {
+
+    let exists = false;
+    let index = 0;
+    const email = req.body.email;
+    const password = req.body.password;
+
+
+    //Checking if email exists
+    db.all(`SELECT email, password FROM users`, [], async (err, rows) => {
+        if (err) {
+            throw err;
+        }
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].email == email) {
+                console.log("Email exists");
+                exists = true;
+                index = i;
+            }
+
+        }
+
+
+        if (exists == false) {
+            return res.json({ status: 400, send: "Email does not exist" });
+        } else {
+
+            //Password is correct
+            const validPass = await bcrypt.compare(password, rows[index].password);
+            if (!validPass) {
+                return res.json({ status: 400, send: 'invalid password' });
+            } else {
+                return res.json({ send: 'Success' });
+            }
+        }
+    });
+
 
 });
 
