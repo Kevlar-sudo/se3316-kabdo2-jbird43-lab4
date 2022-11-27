@@ -25,7 +25,7 @@ function register(){
             res.json()
             .then(data => {
                 console.log(data);
-                //add the new playlist to drop down list
+                //add the new user
                 alert("Successfully added new user");
             })
             .catch(err => console.log('Failed to get json object'))
@@ -45,6 +45,7 @@ var password = document.getElementById("password")
   , confirm_password = document.getElementById("confirm_password");
 
 function validatePassword(){
+    //checking if the two password and confirm password have the same values
   if(password.value != confirm_password.value) {
     confirm_password.setCustomValidity("Passwords Don't Match");
   } else {
@@ -52,5 +53,6 @@ function validatePassword(){
   }
 }
 
+//everytime password or confirm_password fields change we run the validate password script
 password.onchange = validatePassword;
 confirm_password.onkeyup = validatePassword;
