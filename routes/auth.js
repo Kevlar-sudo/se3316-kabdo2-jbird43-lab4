@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const sqlite3 = require("sqlite3").verbose();
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 let db = new sqlite3.Database('./music.db');
 
 
@@ -33,7 +34,7 @@ router.post('/register', async (req, res) => {
         } else {
             try {
                 // insert one row into the langs table
-                db.run(`INSERT INTO users(username, email, password, administrator, deactivated) VALUES(?,?,?,?,?)`, [username, email, hashPassword, administrator,deactivated], function (err) {
+                db.run(`INSERT INTO users(username, email, password, administrator, deactivated) VALUES(?,?,?,?,?)`, [username, email, hashPassword, administrator, deactivated], function (err) {
                     if (err) {
                         return res.json({ status: 300, success: false, error: err })
                     }
@@ -82,7 +83,9 @@ router.post('/login', async (req, res) => {
             if (!validPass) {
                 return res.json({ status: 400, send: 'invalid password' });
             } else {
-                return res.json({ send: 'Success' });
+                //Create and assign jwt token
+                const token = jwt.sign({ _id: rows[index].username }, 'shhhhhhh');
+                res.header('auth-token', token).send();
             }
         }
     });
