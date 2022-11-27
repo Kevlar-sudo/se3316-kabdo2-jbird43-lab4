@@ -755,7 +755,7 @@ function register(){
     administrator: 0
 }
     console.log(newUser);
-    fetch("/api/users",{
+    fetch("/api/user/register",{
         method: 'POST',
         headers: {'Content-type': 'application/json'},
         body: JSON.stringify(newUser)
@@ -778,3 +778,19 @@ function register(){
     .catch()
     
 };
+
+
+//for password confirmation
+var password = document.getElementById("password")
+  , confirm_password = document.getElementById("confirm_password");
+
+function validatePassword(){
+  if(password.value != confirm_password.value) {
+    confirm_password.setCustomValidity("Passwords Don't Match");
+  } else {
+    confirm_password.setCustomValidity('');
+  }
+}
+
+password.onchange = validatePassword;
+confirm_password.onkeyup = validatePassword;
