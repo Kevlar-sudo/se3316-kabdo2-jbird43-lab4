@@ -5,6 +5,7 @@ const sqlite = require("sqlite3").verbose();
 const url = require("url");
 const router = express.Router();
 const authRoute = require('./routes/auth');
+const authenticationNeededRoute = require('./routes/Authentication');
 let sql;
 
 app.use(express.json());
@@ -463,5 +464,7 @@ app.use('/api/user', authRoute);
 //install the router at /api
 app.use("/api", router);
 
+app.use('/api/authentication', authenticationNeededRoute);
+
 app.listen(3000);
-console.log("Listening on port 3000")
+console.log("Listening on port 3000");
