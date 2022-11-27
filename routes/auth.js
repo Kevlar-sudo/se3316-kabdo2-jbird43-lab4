@@ -10,6 +10,7 @@ router.post('/register', async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
     const administrator = req.body.administrator;
+    const deactivated = req.body.administrator;
     //HASH PASSWORD
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
@@ -30,7 +31,7 @@ router.post('/register', async (req, res) => {
         } else {
             try {
                 // insert one row into the langs table
-                db.run(`INSERT INTO users(username, email, password, administrator) VALUES(?,?,?,?)`, [username, email, hashPassword, administrator], function (err) {
+                db.run(`INSERT INTO users(username, email, password, administrator, deactivated) VALUES(?,?,?,?,?)`, [username, email, hashPassword, administrator,deactivated], function (err) {
                     if (err) {
                         return res.json({ status: 300, success: false, error: err })
                     }
