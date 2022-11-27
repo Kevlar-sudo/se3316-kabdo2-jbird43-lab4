@@ -1,57 +1,58 @@
 <!--This is the page that the user is taken to when they click the "login" button"-->
 <html>
-   <head>
-     <title>SE3316 Database Login</title>
-     <link rel="stylesheet" href="login.css" />
-     <style>
-     </style>
-   </head>
- 
-   <centre>
-     <body id = "all">
- 
-       
-       <a href = 'index.html'><h2>Back to Homepage</h2></a>
- 
-    <h4>Please enter your username and password </h4>
-     <form method = 'post' action = '/register'>
-       <label for= 'username'>Enter userame:  </label>
-       <input name = 'username' required>
-       <br><br><label for= 'password'>Enter password: </label>
-       <input name = 'password' type = 'password' required></br></br>
- 
-     
- 
-     <input type="submit"  value="Submit" name = "userSubmitTimes" id="loginSubmit">
- 
-   </form>
 
-   <h4>Don't have an account? Register here:</h4>
+<head>
+  <title>SE3316 Database Login</title>
+  <link rel="stylesheet" href="login.css" />
+  <style>
+  </style>
+</head>
 
-   <h4>New Account </h4>
-     <form onsubmit="return register()">
+<centre>
 
-       <br><label for= 'username'>Enter userame:  </label>
-       <input name = 'username' id="username" required></br>
+  <body id="all">
 
-       <br><label for= 'email'>Enter email: </label>
-       <input name = 'email' type="email" id="email" required></br>
-       
-       <br><label for= 'password'>Enter password: </label>
-       <input name = 'password' type = 'password' id="password" required></br>
+    <a href='index.html'>
+      <h2>Back to Homepage</h2>
+    </a>
 
-       <br><label for= 'confirm_password'>Confirm password: </label>
-       <input name = 'confirm_password' type = 'password' id="confirm_password" required></br><br></br>
- 
-     
- 
-     <input type="submit"  value="Submit" name = "userSubmitTimes" id="loginSubmit">
- 
-   </form>
-   
-   <div id="bottom">SE3316-Lab-4 By Kevin Abdo & Jack Bird ©</div>
-   <script defer src="login.js"></script>
-    </body>
-   </centre>
-   
- </html>
+    <h4>Please enter your email and password </h4>
+    <form onsubmit="return login()">
+      <label for='email'>Enter email: </label>
+      <input name='email' id='emailLogin' required>
+      <br>
+      <br>
+      <label for='password'>Enter password: </label>
+      <input name='password' type='password' id='passwordLogin' required>
+      </br>
+      </br>
+      <input type="submit" value="Submit" name="userSubmitTimes" id="loginSubmit">
+    </form>
+
+
+
+    <h4>Don't have an account? Register here:</h4>
+    <h4>New Account </h4>
+    <form onsubmit="return register()">
+
+      <br>
+      <label for='username'>Enter userame: </label>
+      <input name='username' id="username" required>
+      </br>
+
+      <br>
+      <label for='email'>Enter email: </label>
+      <input name='email' type="email" id="email" required>
+      </br>
+
+      <br><label for='password'>Enter password: </label>
+      <input name='password' type='password' id="password" required></br>
+
+      <br>
+      <label for='confirm_password'>Confirm password: </label>
+      <input name='confirm_password' type='password' id="confirm_password" required>
+      </br>
+      <br>
+      </br>
+      <input type="submit" value="Submit" name="userSubmitTimes" id="registerSubmit">
+    </form>
