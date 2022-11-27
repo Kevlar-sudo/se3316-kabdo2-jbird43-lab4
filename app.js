@@ -4,8 +4,10 @@ const app = express();
 const sqlite = require("sqlite3").verbose();
 const url = require("url");
 const router = express.Router();
+const authRoute = require('./routes/auth');
 let sql;
 
+app.use(express.json());
 //for password encryption
 const bcrypt = require("bcrypt");
 //how many rounds of salt
@@ -414,9 +416,9 @@ router
     const { track_id } = req.body;
     console.log(
       "we want to delete track: " +
-        track_id +
-        "from playlist: " +
-        req.params.name
+      track_id +
+      "from playlist: " +
+      req.params.name
     );
     //add the playlist to our data structure
 
@@ -454,43 +456,9 @@ router
 
 //the backend for the users
 //currently in testing needs more work
-router.route('/users') //all the routes to the tracks
-   
-    
-//post req we can use this later for adding songs to the playlist (it worked for album before)
-//only insert 0 or 1 for administrator (will have validation later)
-//need some password hashing for password
-.post((req,res)=>{
-    try{
-        const {username,email,password,administrator} = req.body;
-        
 
-        //encrypting the password
-        bcrypt.genSalt(saltRounds, function(err, salt) {
-            bcrypt.hash(password, salt, function(err, hash) {
-                // Store hash in your password DB.
-                
-                sql = "INSERT INTO users(username,email,password,administrator) VALUES (?,?,?,?)";
-                db.run(sql,[username,email,hash,administrator], (err)=>{
-                    if(err) return res.json({status:300,success:false,error:err});
-        
-                    console.log("successful input");
-                })
-                return res.json({
-                    status: 200,
-                    success: true,
-                });
-            });
-        })
-
-    }catch (error){
-        return res.json({
-            status: 400,
-            success:false,
-        });
-
-    }
-  });
+//For register and login
+app.use('/api/user', authRoute);
 
 //install the router at /api
 app.use("/api", router);
