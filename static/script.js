@@ -12,6 +12,10 @@ const searchButtonArtist = document.getElementById("searchButtonArtist");
 //for the search results that appear only after search
 const dynamicResults = document.getElementById("intro");
 
+
+//for the about section
+const aboutSection = document.getElementById("about");
+
 dynamicResults.classList.add("close-search");
 
 
