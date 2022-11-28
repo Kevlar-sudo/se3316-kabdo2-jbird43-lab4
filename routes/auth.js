@@ -60,7 +60,7 @@ router.post('/login', async (req, res) => {
 
 
     //Checking if email exists
-    db.all(`SELECT email, password FROM users`, [], async (err, rows) => {
+    db.all(`SELECT username, email, password FROM users`, [], async (err, rows) => {
         if (err) {
             throw err;
         }
@@ -73,6 +73,13 @@ router.post('/login', async (req, res) => {
 
         }
 
+        const userDetails = {
+            username: rows[index].username,
+            email: rows[index].email,
+            password: rows[index].password,
+            administrator: rows[index].administrator
+
+        };
 
         if (exists == false) {
             console.log("email does not exist");
