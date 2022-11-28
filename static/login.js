@@ -1,3 +1,34 @@
+
+//Font end for user login
+function login() {
+
+  const user = {
+    email: document.getElementById("emailLogin").value,
+    password: document.getElementById("passwordLogin").value
+  }
+
+  fetch("/api/user/login", {
+    method: 'POST',
+    headers: { 'Content-type': 'application/json' },
+    body: JSON.stringify(user)
+  })
+    .then(res => {
+      if (res.ok) {
+        res.json()
+          .then(data => {
+
+          });
+
+      }
+    });
+}
+  
+  
+  
+  
+  
+  
+  
   //the function to create a user to our db
   //create new playlist front end WORKING
 function register(){

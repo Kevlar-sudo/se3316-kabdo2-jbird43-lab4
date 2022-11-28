@@ -75,17 +75,20 @@ router.post('/login', async (req, res) => {
 
 
         if (exists == false) {
+            console.log("email does not exist");
             return res.json({ status: 400, send: "Email does not exist" });
         } else {
 
             //Password is correct
             const validPass = await bcrypt.compare(password, rows[index].password);
             if (!validPass) {
+                console.log('Wrong password');
                 return res.json({ status: 400, send: 'invalid password' });
             } else {
                 //Create and assign jwt token
                 const token = jwt.sign({ _id: rows[index].username }, 'shhhhhhh');
                 res.header('auth-token', token).send();
+                console.log(token); //REMOVE THIS LINE (FOR SECURITY)
             }
         }
     });
