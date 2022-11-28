@@ -26,13 +26,12 @@ function register(){
             .then(data => {
                 console.log(data);
                 //add the new user
-                alert("Successfully added new user");
             })
             .catch(err => console.log('Failed to get json object'))
         }
         else{
             console.log('Error: ',res.status);
-            document.getElementById('status').innerText = 'Failed to add item';
+            alert("Something went wrong!");
         }
     })
     .catch()

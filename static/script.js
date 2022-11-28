@@ -491,7 +491,6 @@ searchButtonTracks.addEventListener('click',searchTrackName);
         const l = document.getElementById('inventory');
         
         
-        
         //Creating the info that we will populate
         div = document.createElement("div");
         div.classList.add("searchResult");
@@ -530,7 +529,36 @@ searchButtonTracks.addEventListener('click',searchTrackName);
         div.appendChild(document.createElement("br"));
         div.appendChild(document.createElement("br"));
 
+        //for the "Play on Youtube Button" for each individual track
+
+        // creating button element
+        var youtubeButton = document.createElement("button");
+
+        //setting its id
+        youtubeButton.setAttribute('id',"button"+i);
+       
+        // creating text to be
+        //displayed on button
+        var text = document.createTextNode("Play On Youtube™");
+         
+        // appending text to button
+        youtubeButton.appendChild(text);
+
+        // appending button to div
+        div.appendChild(youtubeButton); 
+
+        div.appendChild(document.createElement("br"));
+        div.appendChild(document.createElement("br"));
+
         l.appendChild(div);
+        
+        //add a function to the newly created button that searches youtube based on the song name and artist
+        document.getElementById("button"+i).addEventListener("click", function (){
+          //we use a query youtube search, we convert the handle and artistN textNodes into strings and then slice them appropriately to extract our wanted data
+          window.open("https://www.youtube.com/results?search_query="+handle.wholeText.slice(12)+" by "+artistN.wholeText.slice(18), '_blank');
+      });
+
+        
         }
     })
     )
