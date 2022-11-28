@@ -24,13 +24,7 @@ function login() {
 }
   
   
-  
-  
-  
-  
-  
   //the function to create a user to our db
-  //create new playlist front end WORKING
 function register(){
 
   //verifying the name only has wanted characters

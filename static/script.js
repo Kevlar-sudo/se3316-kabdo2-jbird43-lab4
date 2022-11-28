@@ -128,8 +128,32 @@ function viewlist(){
        {
         
         const item = document.createElement('li');
-        item.appendChild(document.createTextNode(`track_id: ${playListTracks[playListValue][i][0]},  artist: ${playListTracks[playListValue][i][1]}, album: ${playListTracks[playListValue][i][2]}, playtime: ${playListTracks[playListValue][i][3]}, album: ${playListTracks[playListValue][i][4]}`));
+        const infoTrack = document.createTextNode(`track_id: ${playListTracks[playListValue][i][0]}, track_name: ${playListTracks[playListValue][i][5]},  artist: ${playListTracks[playListValue][i][1]}, album: ${playListTracks[playListValue][i][2]}, playtime: ${playListTracks[playListValue][i][3]}, album: ${playListTracks[playListValue][i][4]}`)
+        item.appendChild(infoTrack);
         l.appendChild(item);
+
+        console.log(infoTrack.wholeText);
+        
+
+        // creating button element
+        var youtubeButton = document.createElement("button");
+
+        //setting its id
+        youtubeButton.setAttribute('id',"button"+i);
+       
+        // creating text to be
+        //displayed on button
+        var text = document.createTextNode("Play On Youtube™");
+         
+        // appending text to button
+        youtubeButton.appendChild(text);
+
+        item.appendChild(youtubeButton);
+
+        document.getElementById("button"+i).addEventListener("click", function (){
+          //we use a query youtube search, we convert the handle and artistN textNodes into strings and then slice them appropriately to extract our wanted data
+          window.open("https://www.youtube.com/results?search_query="+infoTrack.wholeText.split(",")[1].slice(11)+" by"+infoTrack.wholeText.split(",")[2].slice(7), '_blank');
+      });
 
         //adding the durations to an array with the playlist name
         durations[playListValue].push(playListTracks[playListValue][i][3]);
@@ -174,9 +198,32 @@ function addTrack(){
         const texter = document.getElementById("cTrack");
         const l = document.getElementById('listTracks');
         const item = document.createElement('li');
-        item.appendChild(document.createTextNode(`track_id: ${data.data[0].track_id},  artist: ${data.data[0].artist_name}, album: ${data.data[0].album_title}, playtime: ${data.data[0].track_duration}, album: ${data.data[0].album_title}`));
+        console.log(data.data);
+        item.appendChild(document.createTextNode(`track_id: ${data.data[0].track_id}, track_name: ${data.data[0].track_title},  artist: ${data.data[0].artist_name}, album: ${data.data[0].album_title}, playtime: ${data.data[0].track_duration}, album: ${data.data[0].album_title}     `));
         l.appendChild(item);
-        playListTracks[document.getElementById('playsL').value].push([data.data[0].track_id,data.data[0].artist_name,data.data[0].album_title,data.data[0].track_duration,data.data[0].album_title]);
+
+        // creating button element
+        var youtubeButton = document.createElement("button");
+
+        //setting its id
+        youtubeButton.setAttribute('id',"button");
+       
+        // creating text to be
+        //displayed on button
+        var text = document.createTextNode("Play On Youtube™");
+         
+        // appending text to button
+        youtubeButton.appendChild(text);
+
+        item.appendChild(youtubeButton);
+
+        youtubeButton.addEventListener("click", function (){
+          //we use a query youtube search, we convert the handle and artistN textNodes into strings and then slice them appropriately to extract our wanted data
+          window.open("https://www.youtube.com/results?search_query="+data.data[0].track_title+" by "+data.data[0].artist_name, '_blank');
+      });
+
+
+        playListTracks[document.getElementById('playsL').value].push([data.data[0].track_id,data.data[0].artist_name,data.data[0].album_title,data.data[0].track_duration,data.data[0].album_title,data.data[0].track_title]);
         //playListTracks[document.getElementById('playsL').value].push(["hello"]);
         texter.innerText = "Current Tracks"
         }
