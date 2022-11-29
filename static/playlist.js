@@ -23,7 +23,7 @@ function createPlaylist() {
     return;
   }
 
-  console.log(newList);
+  
   fetch("/api/auth/playlist", {
     method: 'PUT',
     headers: {
@@ -49,7 +49,7 @@ function createPlaylist() {
       }
       else {
         console.log('Error: ', res.status);
-        document.getElementById('status').innerText = 'Failed to add item';
+        
       }
     })
     .catch()
@@ -82,7 +82,7 @@ function deletePlaylist() {
       }
       else {
         console.log('Error: ', res.status);
-        document.getElementById('status').innerText = 'Failed to add item';
+        
       }
     })
     .catch()
