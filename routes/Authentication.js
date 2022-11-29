@@ -18,7 +18,7 @@ router.put('/playlist', verify, (req, res) => {
 
     const user = req.header('Cookie');
     //Get the user from cookies
-    let [ajs, ajsA, auth, usernameValue] = user.split(';');
+    let [auth, usernameValue] = user.split(';');
     let [key, value] = usernameValue.split('=');
 
     const username = value;
