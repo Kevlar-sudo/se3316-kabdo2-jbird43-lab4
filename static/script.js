@@ -287,32 +287,63 @@ searchButtonTracks.addEventListener('click',searchTrackName);
         div.appendChild(handle);
         div.appendChild(document.createElement("br"));
 
-        const dateCreated = document.createTextNode("Duration: "+data.data[i].track_duration);
-        div.appendChild(dateCreated);
-        div.appendChild(document.createElement("br"));
-
-        const contact = document.createTextNode("Date Recorded: "+ data.data[i].track_date_recorded);
-        div.appendChild(contact);
-        div.appendChild(document.createElement("br"));
-
-        const assLabel = document.createTextNode("Date Created: "+data.data[i].track_date_created);
-        div.appendChild(assLabel);
-        div.appendChild(document.createElement("br"));
-
-        const activeE = document.createTextNode("Album Name: "+data.data[i].album_title);
-        div.appendChild(activeE);
-        div.appendChild(document.createElement("br"));
-
-        const activeB = document.createTextNode("Track Number In Album: "+data.data[i].track_number);
-        div.appendChild(activeB);
-        div.appendChild(document.createElement("br"));
-
         const artistN = document.createTextNode("Recording Artist: "+data.data[i].artist_name);
         div.appendChild(artistN);
         div.appendChild(document.createElement("br"));
         div.appendChild(document.createElement("br"));
 
+
+          //for the collapsible
+
+          var collapseButton = document.createElement("button"); 
+
+          var textButt = document.createTextNode("View more info");
+
+          collapseButton.appendChild(textButt);
+
+          collapseButton.setAttribute('class',"collapsible");
+          div.appendChild(collapseButton);
+
+          var content = document.createElement("div");
+          content.setAttribute('class',"content");
+
+          //populating the drop collapsible with the required info
+          var paragraph = document.createElement("p");
+          paragraph.innerText = 
+          `Duration: ${data.data[i].track_duration}\n
+          Date Recorded: ${data.data[i].track_date_recorded}\n
+          Date Created: ${data.data[i].track_date_created}\n
+          Album Name: ${data.data[i].album_title}\n
+          Track Number In Album: ${data.data[i].track_number}`;
+
+          content.appendChild(paragraph);
+
+
+          //finally append the collapsible box into our resultant div
+          div.appendChild(content);
+          div.appendChild(document.createElement("br"));
+          div.appendChild(document.createElement("br"));
+
+          //the collapsible function
+          //for the collapsibles (view more info on search result)
+          
+          
+          collapseButton.addEventListener("click", function() {
+          this.classList.toggle("active");
+          
+          var content = this.nextElementSibling;
+          if (content.style.display === "block") {
+          content.style.display = "none";
+          } else {
+          content.style.display = "block";
+          }
+          });
+
+
+
         //for the "Play on Youtube Button" for each individual track
+
+        console.log(data.data[i]);
 
         // creating button element
         var youtubeButton = document.createElement("button");
@@ -358,4 +389,6 @@ function closeResults(){
   }
   dynamicResults.classList.replace("open-search","close-search");
 };
+
+
 
