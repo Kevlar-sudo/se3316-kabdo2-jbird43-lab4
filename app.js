@@ -298,7 +298,8 @@ router
       playlist_name == "genres" ||
       playlist_name == "artists" ||
       playlist_name == "tracks" ||
-      req.params.name == "users"
+      playlist_name == "users"  ||
+      playlist_name == "reviews"
     ) {
       console.log("500 This database is protected and can't be deleted");
       return res.json({
@@ -306,14 +307,14 @@ router
         success: false,
       });
     }
-    //if the playlsit doesn't exist we return an error
-    if (playlists.includes(playlist_name) == false) {
-      return res.json({
-        status: 300,
-        success: false,
-        error: "This playlist doesn't exist",
-      });
-    }
+    // //if the playlsit doesn't exist we return an error
+    // if (playlists.includes(playlist_name) == false) {
+    //   return res.json({
+    //     status: 300,
+    //     success: false,
+    //     error: "This playlist doesn't exist",
+    //   });
+    // }
 
     try {
       const { playlist_name } = req.body;
@@ -415,6 +416,43 @@ router
       });
     }
   });
+
+  
+  
+  //Created a create review put request, we prob need to move it to the authentication.js file and 
+
+//Routes for /api/tracks
+router
+  .route("/reviews") //all the routes to the tracks
+
+  .put((req, res) => {
+    //we specify the playlist_name (playlist to be added to) and track_id (track to be added) in JSON body
+    try {
+      const { username, playlistName, reviewDate, rating, comments } = req.body;
+
+      sql = `INSERT INTO reviews ( username, playlistName, reviewDate, rating, comments) VALUES (?,?,?,?,?)`;
+      db.run(sql, [username,playlistName,reviewDate,rating,comments], (err) => {
+        if (err) return res.json({ status: 300, success: false, error: err });
+
+        console.log(
+          "successful input of review"
+        );
+        
+      });
+      return res.json({
+        status: 200,
+        success: true,
+        
+      });
+    } catch (error) {
+      return res.json({
+        status: 400,
+        success: false,
+      });
+    }
+  })
+
+
 
 //the backend for the users
 //currently in testing needs more work

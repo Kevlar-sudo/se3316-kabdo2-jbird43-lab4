@@ -20,17 +20,14 @@ function connectToDatabase() {
         console.log("This database doesn't exist");
     }
 }
-//this database will store the user info, username and email will be stored as plaintext
-//while password will be hashed using npm bcript in the back-end
-//administrator status will be either 0 (standard user) or 1 (admin), default to standard user
-//the same thing for deactivated, 0 meaning account is active while 1 has been deactivated
-//for creating the user database
+//this database will store the review info
 function createTableReview(db) {
     db.exec(`
     CREATE TABLE IF NOT EXISTS reviews
     (
     username                 VARCHAR(20),
     playlistName             VARCHAR(20),
+    reviewDate               VARCHAR(20),
     rating                   INT,
     comments                 VARCHAR(500)
     )

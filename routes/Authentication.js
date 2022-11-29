@@ -85,6 +85,45 @@ router.put('/playlist', verify, (req, res) => {
 
 });
 
+  //Created a create review put request, we prob need to move it to the authentication.js file and 
+
+
+
+  router.put("/reviews", verify,(req, res) => {
+
+    const user = req.header('Cookie');
+    //Get the user from cookies
+    let [key, value] = user.split(';');
+    let [key2, value2] = value.split('=');
+    
+    //we specify the playlist_name (playlist to be added to) and track_id (track to be added) in JSON body
+    try {
+    
+      const { username, playlistName, reviewDate, rating, comments } = req.body;
+
+      sql = `INSERT INTO reviews ( username, playlistName, reviewDate, rating, comments) VALUES (?,?,?,?,?)`;
+      db.run(sql, [username,playlistName,reviewDate,rating,comments], (err) => {
+        if (err) return res.json({ status: 300, success: false, error: err });
+
+        console.log(
+          "successful input of review"
+        );
+        
+      });
+      return res.json({
+        status: 200,
+        success: true,
+        
+      });
+    } catch (error) {
+      return res.json({
+        status: 400,
+        success: false,
+      });
+    }
+  })
+
+
 
 
 
