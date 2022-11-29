@@ -1,4 +1,4 @@
-//this js script will be used for creating the database of users
+//this js script will be used for creating the database of reviews
 //run this script after running db.js first
 const fs = require("fs");
 const sqlite3 = require("sqlite3").verbose();
@@ -10,8 +10,8 @@ function connectToDatabase() {
     if (fs.existsSync(filepath)) {
         console.log("connected to existing database");
         const db = new sqlite3.Database(filepath, (error) => {
-            deleteTablePlaylist(db);
-            createTablePlaylist(db);
+            deleteTableReview(db);
+            createTableReview(db);
         });
         return new sqlite3.Database(filepath);
 
@@ -25,22 +25,22 @@ function connectToDatabase() {
 //administrator status will be either 0 (standard user) or 1 (admin), default to standard user
 //the same thing for deactivated, 0 meaning account is active while 1 has been deactivated
 //for creating the user database
-function createTablePlaylist(db) {
+function createTableReview(db) {
     db.exec(`
-    CREATE TABLE IF NOT EXISTS playlists
+    CREATE TABLE IF NOT EXISTS reviews
     (
     username                 VARCHAR(20),
     playlistName             VARCHAR(20),
-    numberOfTracks           VARCHAR(20),
-    playTime                 VARCHAR(20)
+    rating                   INT,
+    comments                 VARCHAR(500)
     )
     `
     );
 }
 
-function deleteTablePlaylist(db) {
+function deleteTableReview(db) {
     db.exec(`
-    DROP TABLE IF EXISTS playlists
+    DROP TABLE IF EXISTS reviews
     `
     );
 }
