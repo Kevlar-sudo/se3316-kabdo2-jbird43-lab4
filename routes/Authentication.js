@@ -15,12 +15,20 @@ router.get('/', verify, (req, res) => {
 
 //Add a playlist to the playlist db
 router.put('/playlist', verify, (req, res) => {
-    const username = req.body.username;
+
+    const user = req.header('Cookie');
+    //Get the user from cookies
+    let [key, value] = user.split(';');
+    let [key2, value2] = value.split('=');
+
+    const username = value2;
     const playlistName = req.body.playlistName;
     const numberOfTracks = 0;
     const playTime = 0;
     let exist = false;
     let playlistExists = false;
+
+
 
     //Checking if email exists
     db.all(`SELECT username FROM users`, [], async (err, rows) => {
@@ -31,7 +39,7 @@ router.put('/playlist', verify, (req, res) => {
             if (rows[i].username == username) {
                 console.log("username exists");
                 exist = true;
-  
+
             }
 
         }
@@ -53,24 +61,24 @@ router.put('/playlist', verify, (req, res) => {
                 }
 
                 //If playlist does not exist yet add it to the db
-                if(playlistExists == false){
-                try {
-                    // insert one row into the langs table
-                    db.run(`INSERT INTO playlists(username, playlistName, numberOfTracks, playTime) VALUES(?,?,?,?)`, [username, playlistName, numberOfTracks, playTime], function (err) {
-                        if (err) {
-                            return res.json({ status: 300, success: false, error: err })
-                        }
-                        // get the last insert id
-                        console.log(`A row has been inserted with rowid ${this.lastID}`);
-                        return res.json({ status: 200, success: true })
-                    });
-                } catch (err) {
-                    return res.json({ status: 400, send: err });
+                if (playlistExists == false) {
+                    try {
+                        // insert one row into the langs table
+                        db.run(`INSERT INTO playlists(username, playlistName, numberOfTracks, playTime) VALUES(?,?,?,?)`, [username, playlistName, numberOfTracks, playTime], function (err) {
+                            if (err) {
+                                return res.json({ status: 300, success: false, error: err })
+                            }
+                            // get the last insert id
+                            console.log(`A row has been inserted with rowid ${this.lastID}`);
+                            return res.json({ status: 200, success: true })
+                        });
+                    } catch (err) {
+                        return res.json({ status: 400, send: err });
+                    }
+                } else { //Else return
+                    console.log("Playlist name exists");
+                    return res.json({ status: 400, send: "playlist name already exists" });
                 }
-            }else{ //Else return
-                console.log("Playlist name exists");
-                return res.json({status: 400, send: "playlist name already exists"});
-            }
             });
         }
     });
