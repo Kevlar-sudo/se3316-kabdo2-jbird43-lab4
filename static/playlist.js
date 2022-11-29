@@ -1,3 +1,4 @@
+
 //this is the javascript file for the playlists page (accessed only by authenticated users)
 
 //for playlist
@@ -8,6 +9,7 @@ addPlaylist.addEventListener('click', createPlaylist);
 deleteList.addEventListener('click', deletePlaylist)
 
 document.getElementById("viewList").addEventListener('click', viewlist);
+document.getElementById("viewAllPlaylist").addEventListener('click', viewAllPlaylists);
 document.getElementById("addTrack").addEventListener('click', addTrack);
 
 var playListTracks = {};
@@ -28,7 +30,7 @@ function createPlaylist() {
     playlistName: document.getElementById("playlistName").value
   }
 
-
+  //Need to add HTML to tell user that playlist was added
   fetch("/api/auth/playlist", {
     method: 'PUT',
     headers: {
@@ -40,13 +42,8 @@ function createPlaylist() {
       .then(data => {
         if (data.status != 400) {
           console.log(data);
-          //add the new playlist to drop down list
-          var playsL = document.getElementById('playsL');
-          var option = document.createElement("option");
-          option.text = document.getElementById("playlistName").value;
-          playsL.add(option);
-          //document.getElementById('status').innerText = `Created playlist`;
-        }else{
+
+        } else {
           return;
         }
       }))
@@ -54,6 +51,26 @@ function createPlaylist() {
     .catch()
 
 };
+
+
+function viewAllPlaylists() {
+  fetch("/api/auth/playlist", {
+    method: 'GET',
+
+  })
+    .then(res => res.json()
+      .then(data => {
+        console.log(data.array)
+        for(let i = 0; i < data.array.length; i++){
+          //add the new playlist to drop down list
+          var playsL = document.getElementById('playsLAll');
+          var option = document.createElement("option");
+          option.text = data.array[i];
+          playsL.add(option);
+        }
+      }));
+
+}
 
 
 

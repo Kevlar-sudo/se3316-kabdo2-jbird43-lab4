@@ -5,10 +5,36 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 let db = new sqlite3.Database('./music.db');
 
-//For functions that need authentication to use
-router.get('/', verify, (req, res) => {
+//Get all playlists created by a user
+router.get('/playlist', verify, (req, res) => {
 
-    res.json({ posts: { title: 'posts', description: 'DATA YOU NEED TO AUTH TO USE' } });
+console.log(req.user._id);
+  let username =  req.user._id;
+  let playlistNames = [];
+  let found = false;
+  let k = 0;
+
+   db.all(`SELECT username, playlistName FROM playlists`, [], async (err, rows) => {
+    if (err) {
+        throw err;
+    }
+    for (let i = 0; i < rows.length; i++) {
+        if (rows[i].username == username) {
+            console.log(rows[i].playlistName);
+            playlistNames[k] = (rows[i].playlistName);
+            found = true;
+            k++;
+    }
+}
+
+if(!found){
+    return res.json({staus: 400, error: err});
+}else{
+    console.log(playlistNames);
+    res.json({status: 200, message: "found all playlists", array: playlistNames});
+}
+});
+
 
 })
 
@@ -16,12 +42,12 @@ router.get('/', verify, (req, res) => {
 //Add a playlist to the playlist db
 router.put('/playlist', verify, (req, res) => {
 
-    const user = req.header('Cookie');
+    const user = req.user._id;
     //Get the user from cookies
-    let [auth, usernameValue] = user.split(';');
-    let [key, value] = usernameValue.split('=');
+   // let [auth, usernameValue] = user.split(';');
+    //let [key, value] = usernameValue.split('=');
 
-    const username = value;
+    const username = user;
     const playlistName = req.body.playlistName;
     const numberOfTracks = 0;
     const playTime = 0;

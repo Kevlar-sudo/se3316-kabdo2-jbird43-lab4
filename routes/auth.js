@@ -96,7 +96,6 @@ router.post('/login', async (req, res) => {
                 //Create and assign jwt token
                 const token = jwt.sign({ _id: rows[index].username }, 'shhhhhhh');
                 res.cookie("auth", token);
-                res.cookie("username", rows[index].username);
                 return res.json("Logged-in")
                 console.log(token); //REMOVE THIS LINE (FOR SECURITY)
             }
