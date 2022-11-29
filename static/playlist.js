@@ -26,7 +26,7 @@ function createPlaylist(){
           playlist_name: document.getElementById("playlistName").value
       }
       console.log(newList);
-      fetch("/api/playlist/",{
+      fetch("/api/authenication/playlist/",{
           method: 'PUT',
           headers: {'Content-type': 'application/json'},
           body: JSON.stringify(newList)

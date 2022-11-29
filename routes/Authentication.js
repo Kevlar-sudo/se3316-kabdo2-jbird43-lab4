@@ -12,6 +12,7 @@ router.get('/', verify, (req, res) => {
 
 })
 
+
 //Add a playlist to the playlist db
 router.put('/playlist', verify, (req, res) => {
     const username = req.body.username;
@@ -34,7 +35,6 @@ router.put('/playlist', verify, (req, res) => {
             }
 
         }
-
         //If user name does not exist return
         if (exist == false) {
             console.log("username does not exist");
@@ -76,6 +76,22 @@ router.put('/playlist', verify, (req, res) => {
     });
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
