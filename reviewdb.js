@@ -29,7 +29,8 @@ function createTableReview(db) {
     playlistName             VARCHAR(20),
     reviewDate               VARCHAR(20),
     rating                   INT,
-    comments                 VARCHAR(500)
+    comments                 VARCHAR(500),
+    hidden                   CHAR(1) DEFAULT 0
     )
     `
     );
