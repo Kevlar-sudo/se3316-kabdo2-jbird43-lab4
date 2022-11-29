@@ -5,16 +5,18 @@ module.exports = function (req, res, next) {
 
     const token = req.header('Cookie');
 
-
+    console.log(token)
     if (token === undefined) {
         return res.json({status: 400, message: "Invalid Token"});
     } else {
        console.log(token);
-        let [ajs, ajsA, auth, user] = token.split(';');
+        let [auth, user] = token.split(';');
         let [key, value] = auth.split('=');
 
         console.log(auth.trim());
         console.log(user.trim());
+        console.log(key.trim());
+        console.log(value.trim());
 
         if (!token)  res.json({status: 401, message: 'access denied'});
 
