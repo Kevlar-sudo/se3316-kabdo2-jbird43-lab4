@@ -213,27 +213,55 @@ function sortListArtist() {
         const handle = document.createTextNode("handle: "+data.data[i].artist_handle);
         l.appendChild(handle);
         l.appendChild(document.createElement("br"));
-
-        const dateCreated = document.createTextNode("Date Created: "+data.data[i].artist_date_created);
-        l.appendChild(dateCreated);
         l.appendChild(document.createElement("br"));
 
-        const contact = document.createTextNode("Contact: "+ data.data[i].artist_contact);
-        l.appendChild(contact);
+
+        //for the collapsible
+
+        var collapseButton = document.createElement("button"); 
+
+        var textButt = document.createTextNode("View more info");
+
+        collapseButton.appendChild(textButt);
+
+        collapseButton.setAttribute('class',"collapsible");
+        l.appendChild(collapseButton);
+
+        var content = document.createElement("div");
+        content.setAttribute('class',"content");
+
+        //populating the drop collapsible with the required info
+        var paragraph = document.createElement("p");
+        paragraph.innerText = 
+        `Artist Date Created: ${data.data[i].artist_date_created}\n
+        Artist Contact: ${data.data[i].artist_contact}\n
+        Associated Labels: ${data.data[i].artist_associated_labels}\n
+        Active Year Begin: ${data.data[i].artist_active_year_begin}\n
+        Active Year End: ${data.data[i].artist_active_year_end}`;
+
+        content.appendChild(paragraph);
+
+
+        //finally append the collapsible box into our resultant div
+        l.appendChild(content);
+        l.appendChild(document.createElement("br"));
         l.appendChild(document.createElement("br"));
 
-        const assLabel = document.createTextNode("Associated Label: "+data.data[i].artist_associated_labels);
-        l.appendChild(assLabel);
-        l.appendChild(document.createElement("br"));
+        //the collapsible function
+        //for the collapsibles (view more info on search result)
+        
+        
+        collapseButton.addEventListener("click", function() {
+        this.classList.toggle("active");
+        
+        var content = this.nextElementSibling;
+        if (content.style.display === "block") {
+        content.style.display = "none";
+        } else {
+        content.style.display = "block";
+        }
+        });
 
-        const activeE = document.createTextNode("Active Year End: "+data.data[i].artist_active_year_end);
-        l.appendChild(activeE);
-        l.appendChild(document.createElement("br"));
-
-        const activeB = document.createTextNode("Active Year Begin: "+data.data[i].artist_active_year_begin);
-        l.appendChild(activeB);
-        l.appendChild(document.createElement("br"));
-        l.appendChild(document.createElement("br"));
         }
     })
     )
