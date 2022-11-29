@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const sqlite3 = require("sqlite3").verbose();
 const bcrypt = require('bcryptjs');
+const { cookie } = require('express/lib/response');
 const jwt = require('jsonwebtoken');
 let db = new sqlite3.Database('./music.db');
 
@@ -94,7 +95,9 @@ router.post('/login', async (req, res) => {
             } else {
                 //Create and assign jwt token
                 const token = jwt.sign({ _id: rows[index].username }, 'shhhhhhh');
-                res.header('auth-token', token).send();
+                res.cookie("auth", token);
+                res.cookie("username", rows[index].username);
+                return res.json("Logged-in")
                 console.log(token); //REMOVE THIS LINE (FOR SECURITY)
             }
         }

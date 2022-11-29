@@ -3,14 +3,20 @@ const jwt = require('jsonwebtoken');
 //Middle ware for routes that needs auth
 module.exports = function (req, res, next) {
 
-    const token = req.header('auth-token');
-    if(!token) return res.status(401).send('access denied');
+    const token = req.header('Cookie');
 
-    try{
-        const varified = jwt.verify(token, "shhhhhhh");
+    let [key, value] = token.split(';');
+    let[key2, value2] = key.split('=');
+
+    console.log(value2.trim());
+    console.log(value.trim());
+    if (!token) return res.status(401).send('access denied');
+
+    try {
+        const varified = jwt.verify(value2.trim(), "shhhhhhh");
         req.user = varified;
         next();
-    }catch(err){
+    } catch (err) {
         res.status(400).send("Invalid Token");
     }
 }

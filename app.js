@@ -251,45 +251,6 @@ router
     }
   })
 
-  //put request used to create a specific playlist
-  .put((req, res) => {
-    const { playlist_name } = req.body; //we specify the playlist name in the json body
-    console.log("we want to create playlist: " + playlist_name);
-    //this will keep track of the total number of tracks, initially zero when we create the list
-    myArr[playlist_name] = 0;
-
-    //if we are trying to create a playlist that already exists
-    if (playlists.includes(playlist_name) == true) {
-      return res.json({
-        status: 300,
-        success: false,
-        error: "This playlist name already exists",
-      });
-    }
-
-    //add the playlist to our data structure
-    try {
-      sql = `CREATE TABLE IF NOT EXISTS ${playlist_name} (track_id INT)`;
-      db.run(sql, (err) => {
-        if (err) return res.json({ status: 300, success: false, error: err });
-
-        playlists.push(playlist_name);
-        console.log(playlists);
-        console.log("successful created playlist: " + playlist_name);
-      });
-      return res.json({
-        status: 200,
-        success: true,
-      });
-    } catch (error) {
-      return res.json({
-        status: 400,
-        success: false,
-      });
-    }
-  })
-  //works to add new song to playlist
-
   .post((req, res) => {
     //we specify the playlist_name (playlist to be added to) and track_id (track to be added) in JSON body
     try {
@@ -464,7 +425,7 @@ app.use('/api/user', authRoute);
 //install the router at /api
 app.use("/api", router);
 
-app.use('/api/authentication', authenticationNeededRoute);
+app.use('/api/auth', authenticationNeededRoute);
 
 app.listen(3000);
 console.log("Listening on port 3000");
