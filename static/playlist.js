@@ -23,38 +23,39 @@ function createPlaylist() {
     return;
   }
 
-  
+  const playlist = {
+
+    playlistName: document.getElementById("playlistName").value
+  }
+
+
   fetch("/api/auth/playlist", {
     method: 'PUT',
     headers: {
       'Content-type': 'application/json'
     },
-    body: {
-      playlistName : document.getElementById("playlistName").value
-    }
+    body: JSON.stringify(playlist)
   })
-    .then(res => {
-      if (res.ok) {
-        res.json()
-          .then(data => {
-            console.log(data);
-            //add the new playlist to drop down list
-            var playsL = document.getElementById('playsL');
-            var option = document.createElement("option");
-            option.text = document.getElementById("playlistName").value;
-            playsL.add(option);
-            document.getElementById('status').innerText = `Created playlist ${playlist_name}`;
-          })
-          .catch(err => console.log('Failed to get json object'))
-      }
-      else {
-        console.log('Error: ', res.status);
-        
-      }
-    })
+    .then(res => res.json()
+      .then(data => {
+        if (data.status != 400) {
+          console.log(data);
+          //add the new playlist to drop down list
+          var playsL = document.getElementById('playsL');
+          var option = document.createElement("option");
+          option.text = document.getElementById("playlistName").value;
+          playsL.add(option);
+          //document.getElementById('status').innerText = `Created playlist`;
+        }else{
+          return;
+        }
+      }))
+
     .catch()
 
 };
+
+
 
 //delete playlist
 function deletePlaylist() {
@@ -82,7 +83,7 @@ function deletePlaylist() {
       }
       else {
         console.log('Error: ', res.status);
-        
+
       }
     })
     .catch()

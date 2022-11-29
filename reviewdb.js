@@ -10,6 +10,8 @@ function connectToDatabase() {
     if (fs.existsSync(filepath)) {
         console.log("connected to existing database");
         const db = new sqlite3.Database(filepath, (error) => {
+
+            deleteRock(db);
             deleteTableReview(db);
             createTableReview(db);
         });
@@ -42,7 +44,6 @@ function deleteTableReview(db) {
     `
     );
 }
-
 
 
 //we connect to the database after creating it

@@ -5,23 +5,25 @@ module.exports = function (req, res, next) {
 
     const token = req.header('Cookie');
 
-    if (token === undefined) {
-        return res.status(400).send("Invalid Token");
-    } else {
-        console.log(token);
-        let [key, value] = token.split(';');
-        let [key2, value2] = key.split('=');
 
-        console.log(value2.trim());
-        console.log(value.trim());
-        if (!token) return res.status(401).send('access denied');
+    if (token === undefined) {
+        return res.json({status: 400, message: "Invalid Token"});
+    } else {
+       console.log(token);
+        let [ajs, ajsA, auth, user] = token.split(';');
+        let [key, value] = auth.split('=');
+
+        console.log(auth.trim());
+        console.log(user.trim());
+
+        if (!token)  res.json({status: 401, message: 'access denied'});
 
         try {
-            const varified = jwt.verify(value2.trim(), "shhhhhhh");
+            const varified = jwt.verify(value.trim(), "shhhhhhh");
             req.user = varified;
             next();
         } catch (err) {
-            res.status(400).send("Invalid Token");
+         res.json({status: 400, message: "Invalid Token"});
         }
 
     }
