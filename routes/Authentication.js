@@ -18,10 +18,10 @@ router.put('/playlist', verify, (req, res) => {
 
     const user = req.header('Cookie');
     //Get the user from cookies
-    let [key, value] = user.split(';');
-    let [key2, value2] = value.split('=');
+    let [ajs, ajsA, auth, usernameValue] = user.split(';');
+    let [key, value] = usernameValue.split('=');
 
-    const username = value2;
+    const username = value;
     const playlistName = req.body.playlistName;
     const numberOfTracks = 0;
     const playTime = 0;
@@ -46,7 +46,7 @@ router.put('/playlist', verify, (req, res) => {
         //If user name does not exist return
         if (exist == false) {
             console.log("username does not exist");
-            return res.json({ status: 400, send: "Username does not exist" });
+            res.json({ status: 400, send: "Username does not exist" });
         } else { //If username does exist
             db.all(`SELECT username, playlistName FROM playlists`, [], async (err, rows) => { //Check is the playlist assiociated with the user already exists
                 if (err) {
@@ -67,10 +67,13 @@ router.put('/playlist', verify, (req, res) => {
                         db.run(`INSERT INTO playlists(username, playlistName, numberOfTracks, playTime) VALUES(?,?,?,?)`, [username, playlistName, numberOfTracks, playTime], function (err) {
                             if (err) {
                                 return res.json({ status: 300, success: false, error: err })
+                            } else {
+
+
+                                // get the last insert id
+                                console.log(`A row has been inserted with rowid ${this.lastID}`);
+                                res.json({ status: 200, success: true })
                             }
-                            // get the last insert id
-                            console.log(`A row has been inserted with rowid ${this.lastID}`);
-                            return res.json({ status: 200, success: true })
                         });
                     } catch (err) {
                         return res.json({ status: 400, send: err });
@@ -85,43 +88,43 @@ router.put('/playlist', verify, (req, res) => {
 
 });
 
-  //Created a create review put request, we prob need to move it to the authentication.js file and 
+//Created a create review put request, we prob need to move it to the authentication.js file and 
 
 
 
-  router.put("/reviews", verify,(req, res) => {
+router.put("/reviews", verify, (req, res) => {
 
     const user = req.header('Cookie');
     //Get the user from cookies
     let [key, value] = user.split(';');
     let [key2, value2] = value.split('=');
-    
+
     //we specify the playlist_name (playlist to be added to) and track_id (track to be added) in JSON body
     try {
-    
-      const { username, playlistName, reviewDate, rating, comments } = req.body;
 
-      sql = `INSERT INTO reviews ( username, playlistName, reviewDate, rating, comments) VALUES (?,?,?,?,?)`;
-      db.run(sql, [username,playlistName,reviewDate,rating,comments], (err) => {
-        if (err) return res.json({ status: 300, success: false, error: err });
+        const { username, playlistName, reviewDate, rating, comments } = req.body;
 
-        console.log(
-          "successful input of review"
-        );
-        
-      });
-      return res.json({
-        status: 200,
-        success: true,
-        
-      });
+        sql = `INSERT INTO reviews ( username, playlistName, reviewDate, rating, comments) VALUES (?,?,?,?,?)`;
+        db.run(sql, [username, playlistName, reviewDate, rating, comments], (err) => {
+            if (err) return res.json({ status: 300, success: false, error: err });
+
+            console.log(
+                "successful input of review"
+            );
+
+        });
+        return res.json({
+            status: 200,
+            success: true,
+
+        });
     } catch (error) {
-      return res.json({
-        status: 400,
-        success: false,
-      });
+        return res.json({
+            status: 400,
+            success: false,
+        });
     }
-  })
+})
 
 
 
