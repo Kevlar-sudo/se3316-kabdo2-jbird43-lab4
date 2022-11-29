@@ -1,7 +1,5 @@
 //this is the javascript file for the playlists page (accessed only by authenticated users)
 
-const { cookie } = require("express/lib/response");
-
 //for playlist
 const addPlaylist = document.getElementById("addPlaylist");
 const deleteList = document.getElementById("deleteList");
