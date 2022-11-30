@@ -50,6 +50,8 @@ function register() {
 
 //Login user and output jwt key
 function login(){
+
+  document.getElementById("currentUser").innerText = document.getElementById("emailLogin").value;
   const newUser = {
     email: document.getElementById("emailLogin").value,
     password: document.getElementById("passwordLogin").value,
