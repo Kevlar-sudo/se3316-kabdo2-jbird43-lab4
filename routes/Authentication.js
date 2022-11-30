@@ -286,27 +286,65 @@ router.get('/loggedin', verify, (req, res) => {
     }
 });
 
-//     res.json({ status: 200, message: "got the logged in user", username: req.user._id });
+//for granting admin priviledges
 
-// });
+router.post('/grant', verify, async (req, res) => {
+
+    let exists = false;
+    let index = 0;
+    
+    const {
+        username
+    } = req.body;
+    
+    
+    
+   //Checking if email exists
+   db.all(`SELECT username FROM users`, [], async (err, rows) => {
+    if (err) {
+        throw err;
+    }
+    for (let i = 0; i < rows.length; i++) {
+        if (rows[i].username == username) {
+            console.log("Username exists");
+            exists = true;
+            index = i;
+        }
+
+    }
+
+    const userDetails = {
+        username: rows[index].username,
+        email: rows[index].email,
+        password: rows[index].password,
+        administrator: rows[index].administrator,
+        deactivated: rows[index].deactivated
+
+    };
+
+    if (exists == false) {
+        console.log("user does not exist");
+        return res.json({ status: 400, send: "Username does not exist" });
+    } else {
+        try {
+            console.log(`UPDATE users SET administrator = 1 WHERE username = ${rows[index].username}`);
+            // set the deactivated column for the account to 0
+            db.run(`UPDATE users SET administrator = 1 WHERE username = '${rows[index].username}'`, [], function (err) {
+                if (err) {
+                    return res.json({ status: 300, success: false, error: err })
+                }
+                // console log for confirmation
+                console.log(`We have updated administrator status`);
+                return res.json({ status: 200, success: true })
+            });
+        } catch (err) {
+            return res.json({ status: 400, send: err });
+        }
+        
+    }
+});
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+});
 
 module.exports = router;

@@ -144,7 +144,6 @@ router.put('/confirm', async (req, res) => {
         return res.json({ status: 400, send: "Email does not exist" });
     } else {
         try {
-            console.log("hello friend");
             console.log(`UPDATE users SET deactivted = 0 WHERE email = ${rows[index].email}`);
             // set the deactivated column for the account to 0
             db.run(`UPDATE users SET deactivated = 0 WHERE email = '${rows[index].email}'`, [], function (err) {
@@ -163,6 +162,31 @@ router.put('/confirm', async (req, res) => {
 });
 
 
+});
+
+
+//for getting all the users in our system, will be used in the admin control page
+//(to select a user to grant priviledges to)
+
+router.get('/', (req, res) => {
+    //Get all available users
+    sql = `SELECT * FROM 'users'`;
+
+    try {
+        db.all(sql, [], (err, rows) => {
+            if (err) return res.json({ status: 300, success: false, error: err });
+
+            if (rows.length < 1)
+                return res.json({ status: 300, success: false, error: "No match" });
+
+            return res.json({ status: 200, data: rows, success: true });
+        });
+    } catch (error) {
+        return res.json({
+            status: 400,
+            success: false,
+        });
+    }
 });
 
 
