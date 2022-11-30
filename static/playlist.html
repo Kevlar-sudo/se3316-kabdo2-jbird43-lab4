@@ -11,16 +11,16 @@
 <body>
 
 
-   <div class="topnav">
-    <a href="index.html">Home</a>
-    <a href="login.html">Login</a>
-    <a class="active" href="playlist.html">Playlists</a>
-    <a href="DMCA_POLICY.pdf">DMCA Policy</a>
-    <a href="AUP_POLICY.pdf">AUP Policy</a>
-    <b id="currentUser">Guest</b>
-    <a href="admin.html" id="adminControl">Admin Control</a>
-    
-  </div>
+    <div class="topnav">
+        <a href="index.html">Home</a>
+        <a href="login.html">Login</a>
+        <a class="active" href="playlist.html">Playlists</a>
+        <a href="DMCA_POLICY.pdf">DMCA Policy</a>
+        <a href="AUP_POLICY.pdf">AUP Policy</a>
+        <b id="currentUser">Guest</b>
+        <a href="admin.html" id="adminControl">Admin Control</a>
+
+    </div>
 
 
     <!--to add some space betweeb divs-->
@@ -96,12 +96,15 @@
             <select name="playsLAll" id="playsLAll">
             </select>
             <button id="viewAllPlaylist">View</button>
-            <button id="deleteList">Delete</button>
             <br><br>Add a Track_id to selected playlist: <input type="text" id="trackIDField" maxlength="7">
             <button id="addTrackToPlaylist">Add</button>
-            </br></br>Delete a track from selected playlist:  <select name="deleteTrackPlaylist" id="deleteTrackPlaylist">
+            </br></br>Delete a track from selected playlist: <select name="deleteTrackPlaylist" id="deleteTrackPlaylist">
             </select> <input type="text" id="trackNameDelete" maxlength="7">
             <button id="deleteTrack">Delete</button>
+            </br></br>
+            Delete a selected Playlist: <select name="deletePlaylist" id="deletePlaylist">
+            </select>
+            <button id="deletePlaylistBtn">Delete</button>
             </br></br>
             View all tracks in your playlist: <select name="allPlaylists" id="allPlaylists">
             </select>
