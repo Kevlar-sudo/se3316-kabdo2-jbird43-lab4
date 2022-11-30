@@ -492,7 +492,13 @@ window.onload = function() {
       .then(data => {
         if (data.status != 400) {
           console.log(data);
-          document.getElementById("currentUser").innerText = data.username;
+          if(data.username !== null)
+          {document.getElementById("currentUser").innerText = data.data[0].username;}
+
+          //if the user is an admin, we indicate on logged in account corner
+          if(data.data[0].administrator == 1)
+          {document.getElementById("currentUser").innerText = document.getElementById("currentUser").innerText + " (ADMIN)"}
+
           
 
         } else {
