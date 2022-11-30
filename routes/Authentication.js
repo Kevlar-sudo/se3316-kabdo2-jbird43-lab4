@@ -26,7 +26,6 @@ router.get('/playlist', verify, (req, res) => {
                 k++;
             }
         }
-
         if (!found) {
             return res.json({ staus: 400, error: err });
         } else {
@@ -155,17 +154,44 @@ router.put('/playlist/track', verify, (req, res) => {
 
 });
 
+router.post('/playlist/track', verify, (req, res) => {
+
+    let username = req.user._id;
+    let playlist = req.body.playlistName
+    let trackID = [];
+    let trackName = [];
+    let exist = false;
+    let k = 0;
 
 
 
+    db.all(`SELECT * FROM playlistTracks`, [], async (err, rows) => {
+
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].username == username && rows[i].playlistName == playlist) {
+                trackID[k] = rows[i].trackID;
+                trackName[k] = rows[i].trackName;
+                k++;
+                exist = true;
+            }
+        }
+
+        if (exist) {
+            res.json({ status: 200, array: trackID, array2: trackName });
+        } else {
+            return res.json({ status: 400, send: "Playlist or username not found" });
+        }
+
+    });
+
+
+});
 
 
 router.put("/reviews", verify, (req, res) => {
 
     const user = req.header('Cookie');
-    //Get the user from cookies
-    let [key, value] = user.split(';');
-    let [key2, value2] = value.split('=');
+
 
     //we specify the playlist_name (playlist to be added to) and track_id (track to be added) in JSON body
     try {
