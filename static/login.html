@@ -58,6 +58,26 @@
       <input type="submit" value="Submit" name="userSubmitTimes" id="registerSubmit">
     </form>
 
+
+
+    <h4>Confirm Email upon registration </h4>
+    <form onsubmit="return confirmEmail()">
+
+      <br>
+      <label for='emailConfirm'>Enter email: </label>
+      <input name='emailConfirm' type="email" id="emailConfirm" required>
+      </br>
+
+      <br>
+      <label for='confirmCode'>Enter confirmation code: </label>
+      <input name='confirmCode' id="confirmCode" required>
+      </br>
+      <br>
+      </br>
+
+      <input type="submit" value="Submit" name="userEmailConfirm" id="userEmailConfirm">
+    </form>
+
     <script defer src="login.js"></script>
   </body>
 

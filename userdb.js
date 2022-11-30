@@ -37,7 +37,7 @@ function createTableUser(db){
     email                    VARCHAR(20),
     password                 VARCHAR(20),
     administrator            CHAR(1) DEFAULT 0,
-    deactivated              CHAR(1) DEFAULT 0
+    deactivated              CHAR(1) DEFAULT 1
     )
     `
     );

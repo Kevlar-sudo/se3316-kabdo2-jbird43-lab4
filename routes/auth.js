@@ -12,7 +12,7 @@ router.post('/register', async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
     const administrator = req.body.administrator;
-    const deactivated = req.body.administrator;
+    const deactivated = req.body.deactivated;
     //HASH PASSWORD
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
@@ -105,6 +105,69 @@ router.post('/login', async (req, res) => {
 
 
 });
+
+
+//confirmation code upon registration
+router.put('/confirm', async (req, res) => {
+
+    let exists = false;
+    let index = 0;
+    
+    const email = req.body.email;
+    
+    
+    
+   //Checking if email exists
+   db.all(`SELECT email FROM users`, [], async (err, rows) => {
+    if (err) {
+        throw err;
+    }
+    for (let i = 0; i < rows.length; i++) {
+        if (rows[i].email == email) {
+            console.log("Email exists");
+            exists = true;
+            index = i;
+        }
+
+    }
+
+    const userDetails = {
+        username: rows[index].username,
+        email: rows[index].email,
+        password: rows[index].password,
+        administrator: rows[index].administrator,
+        deactivated: rows[index].deactivated
+
+    };
+
+    if (exists == false) {
+        console.log("email does not exist");
+        return res.json({ status: 400, send: "Email does not exist" });
+    } else {
+        try {
+            console.log("hello friend");
+            console.log(`UPDATE users SET deactivted = 0 WHERE email = ${rows[index].email}`);
+            // set the deactivated column for the account to 0
+            db.run(`UPDATE users SET deactivated = 0 WHERE email = '${rows[index].email}'`, [], function (err) {
+                if (err) {
+                    return res.json({ status: 300, success: false, error: err })
+                }
+                // console log for confirmation
+                console.log(`We have updated activation status`);
+                return res.json({ status: 200, success: true })
+            });
+        } catch (err) {
+            return res.json({ status: 400, send: err });
+        }
+        
+    }
+});
+
+
+});
+
+
+
 
 
 module.exports = router;
