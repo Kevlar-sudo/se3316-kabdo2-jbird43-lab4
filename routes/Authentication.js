@@ -114,13 +114,48 @@ router.put('/playlist', verify, (req, res) => {
 
 router.delete('/playlist', verify, (req, res) => {
 
-    const username = req.user._id;
-    const playlistName = req.body.playlistName;
+    let username = req.user._id;
+    console.log(username);
+    let playlistName = req.body.playlistName;
+    console.log(playlistName);
+    let index = 0;
+    let exist = false;
+    let deleted = false;
+
+    db.all(`SELECT username, playlistName FROM playlists`, [], async (err, rows) => {
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].username == username && rows[i].playlistName == playlistName) {
+                exist = true;
+                index = i;
+            }
+        }
+        if (exist) {
+            //Delete tracks in playlist
+            db.run(`DELETE FROM playlistTracks WHERE username=? AND playlistName=?`, username, playlistName, (err) => {
+                if (err) return res.json({ status: 300, success: false, error: err });
+
+                res.json({ status: 200, success: true });
+                console.log("successful delete");
+
+            });
+
+            db.run(`DELETE FROM playlists WHERE username=? AND playlistName=?`, username, playlistName, (err) => {
+                if (err) return res.json({ status: 300, success: false, error: err });
+                console.log("successful delete");
+            });
+
+
+        } else {
+            return res.json({ status: 400, message: "TRACK WITH THAT PLAYIST DOES NOT EXIST" });
+        }
+    });
 
 
 
 
 });
+
+
 
 //Created a create review put request, we prob need to move it to the authentication.js file and 
 
@@ -212,21 +247,21 @@ router.delete('/playlist/track', verify, (req, res) => {
         for (let i = 0; i < rows.length; i++) {
             if (rows[i].username == username && rows[i].playlistName == playlistName && rows[i].trackID == trackID) {
                 exist = true;
-                index=i;
+                index = i;
             }
         }
-    if (exist) {
-        db.run(`DELETE FROM playlistTracks WHERE username=? AND trackID=? AND playlistName=?`, username, trackID, playlistName, (err) => {
-            if (err) return res.json({ status: 300, success: false, error: err });
+        if (exist) {
+            db.run(`DELETE FROM playlistTracks WHERE username=? AND trackID=? AND playlistName=?`, username, trackID, playlistName, (err) => {
+                if (err) return res.json({ status: 300, success: false, error: err });
 
 
-            res.json({ status: 200, success: true });
-            console.log("successful delete");
-        });
-    }else{
-        return  res.json({ status: 400, message: "TRACK WITH THAT PLAYIST DOES NOT EXIST"});
-    }
-});
+                res.json({ status: 200, success: true });
+                console.log("successful delete");
+            });
+        } else {
+            return res.json({ status: 400, message: "TRACK WITH THAT PLAYIST DOES NOT EXIST" });
+        }
+    });
 
 
 
