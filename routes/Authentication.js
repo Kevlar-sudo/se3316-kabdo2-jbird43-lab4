@@ -193,6 +193,15 @@ router.put("/reviews", verify, (req, res) => {
     }
 })
 
+router.get('/loggedin', verify, (req, res) => {
+
+    //Get the loged in username
+    const user = req.user._id;
+
+    res.json({ status: 200, message: "got the logged in user", username: req.user._id });
+
+});
+
 
 
 
