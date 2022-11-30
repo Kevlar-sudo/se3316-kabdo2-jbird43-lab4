@@ -95,6 +95,7 @@ window.onload = function() {
       .catch()
     };
 
+    //for deactivating the account by the admin
     document.getElementById("deactivateAcc").addEventListener('click',deactivateAccount);
 
     function deactivateAccount(){
@@ -122,5 +123,37 @@ window.onload = function() {
     
         .catch()
       };
+
+      //for activating the account by the admin 
+
+      document.getElementById("activateAcc").addEventListener('click',activateAccount);
+
+      function activateAccount(){
+        
+
+        const actUser = {
+          username: document.getElementById("userList").value
+        }
+        console.log(actUser);
+    
+        fetch("/api/auth/activate", {
+          method: 'POST',
+          headers: { 'Content-type': 'application/json' },
+          body: JSON.stringify(actUser),
+        })
+          .then(res => res.json()
+            .then(data => {
+              if (data.status != 400) {
+                console.log(data);
+                console.log("successfully activated the account");
+                //do something
+      
+              } else {
+                return;
+              }
+            }))
+      
+          .catch()
+        };
 
   
