@@ -69,12 +69,12 @@ input{
  h3{
     text-align: center;
  }
- .close-search{
+ .close-search, .hidden{
       
     visibility: hidden;
     
  }
- .open-search{
+ .open-search, .visible{
    visibility: visible;
    
 }
