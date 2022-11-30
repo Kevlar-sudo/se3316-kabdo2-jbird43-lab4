@@ -95,4 +95,32 @@ window.onload = function() {
       .catch()
     };
 
+    document.getElementById("deactivateAcc").addEventListener('click',deactivateAccount);
+
+    function deactivateAccount(){
+      const deactUser = {
+        username: document.getElementById("userList").value
+      }
+      console.log(deactUser);
+  
+      fetch("/api/auth/deactivate", {
+        method: 'POST',
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify(deactUser),
+      })
+        .then(res => res.json()
+          .then(data => {
+            if (data.status != 400) {
+              console.log(data);
+              console.log("successfully deactivated the account");
+              //do something
+    
+            } else {
+              return;
+            }
+          }))
+    
+        .catch()
+      };
+
   

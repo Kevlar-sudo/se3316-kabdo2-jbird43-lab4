@@ -27,50 +27,30 @@
     
 
 <div class="admin">
-    <h2>View User-Created Playlists</h2>
+    <h2>Review Control</h2>
     
 
     <span id="currentPlaylists">
-        <h4>View Public Playlists</h4>
+        
         <label for="Available Lists">Choose a Playlist:</label>
 
         <select name="playsL" id="playsL">
          </select>
-        <button id="viewList">View</button>
 
-        <br><br>
-                <!--For the rating system-->
-                <div class="rate">
-                    <input type="radio" id="star5" name="rate" value="5" />
-                    <label for="star5" title="text">5 stars</label>
-                    <input type="radio" id="star4" name="rate" value="4" />
-                    <label for="star4" title="text">4 stars</label>
-                    <input type="radio" id="star3" name="rate" value="3" />
-                    <label for="star3" title="text">3 stars</label>
-                    <input type="radio" id="star2" name="rate" value="2" />
-                    <label for="star2" title="text">2 stars</label>
-                    <input type="radio" id="star1" name="rate" value="1" />
-                    <label for="star1" title="text">1 star</label>
-                  </div>
-                  <br></br>
-        <br>
-        <italic>Add a review to selected playlist</italic>
-        </br>
-        <textarea id="review" rows="9" cols="60"></textarea>
-        <button id="addTrack">Add</button>
-        </br></br>
+         <br></br>
+         <label for="Available Reviews">Choose a Review:</label>
+
+        <select name="reviewsL" id="reviewsL">
+         </select>
 
 
+         <br></br>
+        <button id="hideReview">Hide Review</button>
+
         
-        </br></br>
-        <h4 id="cTrack">Current Tracks</h4>
-        <ul id="listTracks"></ul>
-        <button id="sortArtistPlaylist" >Playlist by artist</button>
-        <button id="sortTrackPlaylist" >Playlist by track</button>
-        <button id="sortAlbumPlaylist" >Playlist by album</button>
-        <button id="sortLengthPlaylist" >Playlist by length</button>
-        
-        
+        <button id="visibleReview">Make Review Visible</button>
+       
+
     </span>
 </div>
 
@@ -79,7 +59,7 @@
 
 
 <div class="admin">
-    <h2>View users</h2>
+    <h2>User Control</h2>
     
 
     <span id="currentPlaylists">
@@ -89,6 +69,7 @@
         <select name="userList" id="userList">
          </select>
         <button id="grantAdmin">Grant Admin Priviledge</button>
+        <button id="deactivateAcc">Deactivate Account</button>
         
         
         

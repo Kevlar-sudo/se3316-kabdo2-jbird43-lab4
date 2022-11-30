@@ -327,7 +327,6 @@ router.post('/grant', verify, async (req, res) => {
         return res.json({ status: 400, send: "Username does not exist" });
     } else {
         try {
-            console.log(`UPDATE users SET administrator = 1 WHERE username = ${rows[index].username}`);
             // set the deactivated column for the account to 0
             db.run(`UPDATE users SET administrator = 1 WHERE username = '${rows[index].username}'`, [], function (err) {
                 if (err) {
@@ -335,6 +334,70 @@ router.post('/grant', verify, async (req, res) => {
                 }
                 // console log for confirmation
                 console.log(`We have updated administrator status`);
+                return res.json({ status: 200, success: true })
+            });
+        } catch (err) {
+            return res.json({ status: 400, send: err });
+        }
+        
+    }
+});
+
+
+});
+
+
+
+//for deactivating user accounts by admin
+
+//for granting admin priviledges
+
+router.post('/deactivate', verify, async (req, res) => {
+
+    let exists = false;
+    let index = 0;
+    
+    const {
+        username
+    } = req.body;
+    
+    
+    
+   //Checking if user exists
+   db.all(`SELECT username FROM users`, [], async (err, rows) => {
+    if (err) {
+        throw err;
+    }
+    for (let i = 0; i < rows.length; i++) {
+        if (rows[i].username == username) {
+            console.log("Username exists");
+            exists = true;
+            index = i;
+        }
+
+    }
+
+    const userDetails = {
+        username: rows[index].username,
+        email: rows[index].email,
+        password: rows[index].password,
+        administrator: rows[index].administrator,
+        deactivated: rows[index].deactivated
+
+    };
+
+    if (exists == false) {
+        console.log("user does not exist");
+        return res.json({ status: 400, send: "Username does not exist" });
+    } else {
+        try {
+            // set the deactivated column for the account to 0
+            db.run(`UPDATE users SET deactivated = 2 WHERE username = '${rows[index].username}'`, [], function (err) {
+                if (err) {
+                    return res.json({ status: 300, success: false, error: err })
+                }
+                // console log for confirmation
+                console.log(`We have updated activation status`);
                 return res.json({ status: 200, success: true })
             });
         } catch (err) {
