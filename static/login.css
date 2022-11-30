@@ -44,3 +44,14 @@ body{
     text-decoration: none;
     font-size: 18px;
   }
+
+  .hidden{
+      
+    visibility: hidden;
+    
+ }
+ .visible{
+      
+  visibility: visible;
+  
+}
