@@ -12,6 +12,7 @@ document.getElementById("viewList").addEventListener('click', viewlist);
 document.getElementById("viewAllPlaylist").addEventListener('click', viewAllPlaylists);
 document.getElementById("addTrackToPlaylist").addEventListener('click', addTrackToPlaylist);
 document.getElementById("viewTracksInPlaylist").addEventListener('click', viewTracks);
+document.getElementById("deleteTrack").addEventListener('click', deleteTrackFromPlaylist);
 
 var playListTracks = {};
 var durations = {};
@@ -58,6 +59,7 @@ function viewAllPlaylists() {
 
   var playsL = document.getElementById('playsLAll');
   var viewPlaylist = document.getElementById('allPlaylists');
+  var deletePlaylist = document.getElementById('deleteTrackPlaylist');
 
   fetch("/api/auth/playlist", {
     method: 'GET',
@@ -71,10 +73,13 @@ function viewAllPlaylists() {
           //add the new playlist to drop down list
           var option = document.createElement("option");
           var option2 = document.createElement("option");
+          var option3 = document.createElement("option");
           option.text = data.array[i];
           option2.text = data.array[i];
+          option3.text = data.array[i];
           playsL.add(option);
           viewPlaylist.add(option2);
+          deletePlaylist.add(option3);
         }
       }));
 
@@ -128,18 +133,18 @@ function viewTracks() {
     .then(res => res.json()
       .then(data => {
 
-        if(data.array != undefined){
-        for (let i = 0; i < data.array.length; i++) {
+        if (data.array != undefined) {
+          for (let i = 0; i < data.array.length; i++) {
 
-          item.appendChild(document.createTextNode(`Track Name: ${data.array[i]}  Album Name: ${data.array2[i]}`));
+            item.appendChild(document.createTextNode(`Track Name: ${data.array[i]}  Album Name: ${data.array2[i]}`));
+            item.appendChild(document.createElement('br'));
+
+          }
+        } else {
+          item.appendChild(document.createTextNode("There are no tracks in this playlist"));
           item.appendChild(document.createElement('br'));
 
         }
-      }else{
-        item.appendChild(document.createTextNode("There are no tracks in this playlist"));
-        item.appendChild(document.createElement('br'));
-
-      }
 
         tracksList.appendChild(item);
 
@@ -150,7 +155,32 @@ function viewTracks() {
 
 }
 
+function deleteTrackFromPlaylist() {
 
+  const track = {
+
+    playlistName: document.getElementById("deleteTrackPlaylist").value,
+    trackID: document.getElementById("trackNameDelete").value
+  }
+
+
+  fetch("/api/auth/playlist/track", {
+    method: 'DELETE',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify(track)
+
+  })
+    .then(res => res.json()
+      .then(data => {
+        console.log(data);
+      }));
+
+
+
+
+}
 
 
 
@@ -638,7 +668,7 @@ function addTrack() {
 };
 
 //upon window load we update the logged in person's username
-window.onload = function() {
+window.onload = function () {
   document.getElementById("adminControl").classList.add("hidden");
 
 
@@ -653,16 +683,16 @@ window.onload = function() {
         if (data.status != 400) {
           console.log(data);
 
-          if(data.username !== null)
-          {document.getElementById("currentUser").innerText = data.data[0].username;}
+          if (data.username !== null) { document.getElementById("currentUser").innerText = data.data[0].username; }
 
           //if the user is an admin, we indicate on logged in account corner
-          if(data.data[0].administrator == 1)
-          {document.getElementById("currentUser").innerText = document.getElementById("currentUser").innerText + " (ADMIN)"
-        
-          document.getElementById("adminControl").classList.add("visible");}
+          if (data.data[0].administrator == 1) {
+            document.getElementById("currentUser").innerText = document.getElementById("currentUser").innerText + " (ADMIN)"
 
-          
+            document.getElementById("adminControl").classList.add("visible");
+          }
+
+
         } else {
           return;
         }

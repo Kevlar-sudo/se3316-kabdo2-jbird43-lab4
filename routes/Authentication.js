@@ -111,6 +111,17 @@ router.put('/playlist', verify, (req, res) => {
 
 });
 
+
+router.delete('/playlist', verify, (req, res) => {
+
+    const username = req.user._id;
+    const playlistName = req.body.playlistName;
+
+    
+
+
+});
+
 //Created a create review put request, we prob need to move it to the authentication.js file and 
 
 
