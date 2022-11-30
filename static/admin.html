@@ -11,11 +11,11 @@
   <div class="topnav">
     <a href="index.html">Home</a>
     <a href="login.html">Login</a>
-    <a class="active" href="playlist.html">Playlists</a>
+    <a href="playlist.html">Playlists</a>
     <a href="DMCA_POLICY.pdf">DMCA Policy</a>
     <a href="AUP_POLICY.pdf">AUP Policy</a>
     <b id="currentUser">Guest</b>
-    <a href="admin.html" id="adminControl">Admin Control</a>
+    <a class="active" href="example.com" id="adminControl">Admin Control</a>
     
   </div>
 
@@ -79,33 +79,17 @@
 
 
 <div class="admin">
-    <h2>Manage My Playlists</h2>
-    <span>
-        <h4>Add New Playlist</h4>
-        Name: <input type="text" id="playlistName" maxlength="20">
-        <button id="addPlaylist">Add</button>
-    </span>
+    <h2>View users</h2>
+    
 
     <span id="currentPlaylists">
-        <h4>View Current Playlists</h4>
-        <label for="Available Lists">Choose a Playlist:</label>
-
-        <select name="playsLAll" id="playsLAll">
-         </select>
-        <button id="viewAllPlaylist">View</button>
-        <button id="deleteList">Delete</button>
-        <br><br>Add a Track_id to selected playlist: <input type="text" id="trackIDField" maxlength="7">
-        <button id="addTrackToPlaylist">Add</button>
-        </br></br>
-        Delete a track from selected playlist: <input type="text" id="trackNameDelete" maxlength="7">
-        <button id="deleteTrack">Delete</button>
         
-        <h4 id="cTrack">Current Tracks</h4>
-        <ul id="listTracks"></ul>
-        <button id="sortArtistPlaylist" >Playlist by artist</button>
-        <button id="sortTrackPlaylist" >Playlist by track</button>
-        <button id="sortAlbumPlaylist" >Playlist by album</button>
-        <button id="sortLengthPlaylist" >Playlist by length</button>
+        <label for="Registered Users">Choose a User:</label>
+
+        <select name="userList" id="userList">
+         </select>
+        <button id="grantAdmin">Grant Admin Priviledge</button>
+        
         
         
     </span>
@@ -118,6 +102,6 @@
 <br></br>
 
 <div id="bottom">SE3316-Lab-4 By Kevin Abdo & Jack Bird ©</div>
-<script defer src="playlist.js"></script>
+<script defer src="admin.js"></script>
 </body>
 </html>
