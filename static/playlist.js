@@ -10,7 +10,7 @@ deleteList.addEventListener('click', deletePlaylist)
 
 document.getElementById("viewList").addEventListener('click', viewlist);
 document.getElementById("viewAllPlaylist").addEventListener('click', viewAllPlaylists);
-document.getElementById("addTrack").addEventListener('click', addTrack);
+document.getElementById("addTrackToPlaylist").addEventListener('click', addTrackToPlaylist);
 
 var playListTracks = {};
 var durations = {};
@@ -61,7 +61,7 @@ function viewAllPlaylists() {
     .then(res => res.json()
       .then(data => {
         console.log(data.array)
-        for(let i = 0; i < data.array.length; i++){
+        for (let i = 0; i < data.array.length; i++) {
           //add the new playlist to drop down list
           var playsL = document.getElementById('playsLAll');
           var option = document.createElement("option");
@@ -71,6 +71,54 @@ function viewAllPlaylists() {
       }));
 
 }
+
+
+function addTrackToPlaylist(){
+
+
+  console.log(":HI");
+  
+  
+  const playlist = {
+
+    trackID: document.getElementById("trackIDField").value,
+    playlistName: document.getElementById("playsLAll").value
+  }
+console.log(playlist);
+
+  //Need to add HTML to tell user that playlist was added
+  fetch("/api/auth/playlist/track", {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify(playlist)
+  })
+    .then(res => res.json()
+      .then(data => {
+
+          console.log(data);
+
+      }))
+
+    .catch()
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //delete playlist
@@ -189,9 +237,9 @@ function addTrack() {
     return;
   }
   //make sure our json object has an array for the playlist name so we can push later on in the function
-  if (playListTracks[document.getElementById('playsL').value] == undefined) { playListTracks[document.getElementById('playsL').value] = []; }
+  if (playListTracks[document.getElementById('playsLAll').value] == undefined) { playListTracks[document.getElementById('playsL').value] = []; }
 
-  fetch("/api/tracks/" + input, {
+  fetch("/api/auth/playlist/track" , {
     method: 'GET',
 
   })
@@ -243,39 +291,7 @@ function addTrack() {
   //basically we have to fetch /playlist/:name to get no of tracks and display it 
 
 
-  const newTrack = {
-    playlist_name: document.getElementById("playsL").value,
-    track_id: document.getElementById("trackName").value
-  }
-  console.log(newTrack);
-  fetch("/api/playlist/", {
-    method: 'POST',
-    headers: { 'Content-type': 'application/json' },
-    body: JSON.stringify(newTrack)
-  })
-    .then(res => {
-      if (res.ok) {
-        res.json()
-          .then(data => {
-
-            //add the object to the list
-            // const l = document.getElementById('listTracks');
-            // const item = document.createElement('li');
-            // item.appendChild(document.createTextNode("track_id: "+data.data[0].track_id));
-            // l.appendChild(item);
-
-
-          })
-          .catch(err => console.log('Failed to get json object'))
-      }
-      else {
-        console.log('Error: ', res.status);
-        document.getElementById('status').innerText = 'Failed to add item';
-      }
-    })
-    .catch()
-
-};
+  
 //to convert our durations to seconds
 function toSeconds(time) {
   var minutes = Number(time.slice(0, 2));
@@ -477,6 +493,8 @@ function sortPlaylistlength() {
       switching = true;
     }
   }
+
+}
 };
 
 //upon window load we update the logged in person's username
