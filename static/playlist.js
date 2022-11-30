@@ -11,6 +11,7 @@ deleteList.addEventListener('click', deletePlaylist)
 document.getElementById("viewList").addEventListener('click', viewlist);
 document.getElementById("viewAllPlaylist").addEventListener('click', viewAllPlaylists);
 document.getElementById("addTrackToPlaylist").addEventListener('click', addTrackToPlaylist);
+document.getElementById("viewTracksInPlaylist").addEventListener('click', viewTracks);
 
 var playListTracks = {};
 var durations = {};
@@ -54,56 +55,94 @@ function createPlaylist() {
 
 //View all playlists of a logged in user
 function viewAllPlaylists() {
+
+  var playsL = document.getElementById('playsLAll');
+  var viewPlaylist = document.getElementById('allPlaylists');
+
   fetch("/api/auth/playlist", {
     method: 'GET',
 
   })
     .then(res => res.json()
       .then(data => {
-        console.log(data.array)
+        console.log(data.array);
+
         for (let i = 0; i < data.array.length; i++) {
           //add the new playlist to drop down list
-          var playsL = document.getElementById('playsLAll');
           var option = document.createElement("option");
+          var option2 = document.createElement("option");
           option.text = data.array[i];
+          option2.text = data.array[i];
           playsL.add(option);
+          viewPlaylist.add(option2);
         }
       }));
 
 }
 
-
-function addTrackToPlaylist(){
-
-
-  console.log(":HI");
-  
-  
-  const playlist = {
+//Function to add ttracks to a playlist
+function addTrackToPlaylist() {
+  const track = {
 
     trackID: document.getElementById("trackIDField").value,
     playlistName: document.getElementById("playsLAll").value
   }
-console.log(playlist);
-
   //Need to add HTML to tell user that playlist was added
   fetch("/api/auth/playlist/track", {
     method: 'PUT',
     headers: {
       'Content-type': 'application/json'
     },
-    body: JSON.stringify(playlist)
+    body: JSON.stringify(track)
   })
     .then(res => res.json()
       .then(data => {
 
-          console.log(data);
+        console.log(data);
 
       }))
 
     .catch()
 
 };
+
+function viewTracks() {
+  const tracksList = document.getElementById('listPlaylistTracks');
+  const item = document.createElement('li');
+
+  emptyDOM(tracksList)
+
+  const playlist = {
+
+    playlistName: document.getElementById("allPlaylists").value
+  }
+
+  fetch("/api/auth/playlist/track", {
+    method: 'POST',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify(playlist)
+
+  })
+    .then(res => res.json()
+      .then(data => {
+        for (let i = 0; i < data.array.length; i++) {
+
+          item.appendChild(document.createTextNode(`Track Name: ${data.array[i]}  Album Name: ${data.array2[i]}`));
+          item.appendChild(document.createElement('br'));
+
+        }
+
+
+        tracksList.appendChild(item);
+
+
+        console.log(data.array);
+        console.log(data.array2);
+      }));
+
+}
 
 
 
@@ -239,7 +278,7 @@ function addTrack() {
   //make sure our json object has an array for the playlist name so we can push later on in the function
   if (playListTracks[document.getElementById('playsLAll').value] == undefined) { playListTracks[document.getElementById('playsL').value] = []; }
 
-  fetch("/api/auth/playlist/track" , {
+  fetch("/api/auth/playlist/track", {
     method: 'GET',
 
   })
@@ -291,219 +330,219 @@ function addTrack() {
   //basically we have to fetch /playlist/:name to get no of tracks and display it 
 
 
-  
-//to convert our durations to seconds
-function toSeconds(time) {
-  var minutes = Number(time.slice(0, 2));
-  var seconds = Number(time.slice(3));
-  return seconds + minutes * 60;
-}
 
-function sum(a, b) {
-  return a + b;
-}
-
-document.getElementById("deleteTrack").addEventListener('click', deleteTrackFromPlaylist);
-
-//to delete a specific track from a playlist
-function deleteTrackFromPlaylist() {
-  var playListValue = document.getElementById('playsL').value;
-
-  if (/^\d+$/.test(playListValue) == false) {
-    alert("Please enter digits between 0-9 only!");
-    return;
+  //to convert our durations to seconds
+  function toSeconds(time) {
+    var minutes = Number(time.slice(0, 2));
+    var seconds = Number(time.slice(3));
+    return seconds + minutes * 60;
   }
 
-  const removeTrack = {
-    track_id: document.getElementById("trackNameDelete").value
+  function sum(a, b) {
+    return a + b;
   }
-  fetch("/api/playlist/" + playListValue, {
-    method: 'DELETE',
-    headers: { 'Content-type': 'application/json' },
-    body: JSON.stringify(removeTrack)
-  })
-    .then(res => {
-      if (res.ok) {
-        res.json()
-          .then(data => {
-            console.log(data);
-            //add the new playlist to drop down list
-            //window.alert("success!");
 
-            document.getElementById('status').innerText = `Created playlist ${playlist_name}`;
-          })
-          .catch(err => console.log('Failed to get json object'))
-      }
-      else {
-        console.log('Error: ', res.status);
+  document.getElementById("deleteTrack").addEventListener('click', deleteTrackFromPlaylist);
 
-      }
+  //to delete a specific track from a playlist
+  function deleteTrackFromPlaylist() {
+    var playListValue = document.getElementById('playsL').value;
+
+    if (/^\d+$/.test(playListValue) == false) {
+      alert("Please enter digits between 0-9 only!");
+      return;
+    }
+
+    const removeTrack = {
+      track_id: document.getElementById("trackNameDelete").value
+    }
+    fetch("/api/playlist/" + playListValue, {
+      method: 'DELETE',
+      headers: { 'Content-type': 'application/json' },
+      body: JSON.stringify(removeTrack)
     })
-    .catch()
+      .then(res => {
+        if (res.ok) {
+          res.json()
+            .then(data => {
+              console.log(data);
+              //add the new playlist to drop down list
+              //window.alert("success!");
 
-};
+              document.getElementById('status').innerText = `Created playlist ${playlist_name}`;
+            })
+            .catch(err => console.log('Failed to get json object'))
+        }
+        else {
+          console.log('Error: ', res.status);
 
-//FOR SORTING THE PLAYLIST NOT THE SEARCH RESULTS
-document.getElementById("sortArtistPlaylist").addEventListener('click', sortPlaylistArtist);
-document.getElementById("sortTrackPlaylist").addEventListener('click', sortPlaylistTrack);
-document.getElementById("sortAlbumPlaylist").addEventListener('click', sortPlaylistAlbum);
-document.getElementById("sortLengthPlaylist").addEventListener('click', sortPlaylistlength);
+        }
+      })
+      .catch()
+
+  };
+
+  //FOR SORTING THE PLAYLIST NOT THE SEARCH RESULTS
+  document.getElementById("sortArtistPlaylist").addEventListener('click', sortPlaylistArtist);
+  document.getElementById("sortTrackPlaylist").addEventListener('click', sortPlaylistTrack);
+  document.getElementById("sortAlbumPlaylist").addEventListener('click', sortPlaylistAlbum);
+  document.getElementById("sortLengthPlaylist").addEventListener('click', sortPlaylistlength);
 
 
-//for sorting the playlist
-//here will go sorter function :O
-function sortPlaylistArtist() {
-  var list, i, switching, b, shouldSwitch;
-  list = document.getElementById("listTracks");
-  switching = true;
-  /* Make a loop that will continue until
-  no switching has been done: */
-  while (switching) {
-    // Start by saying: no switching is done:
-    switching = false;
-    b = list.getElementsByTagName("LI");
-    // Loop through all list items:
-    for (i = 0; i < (b.length - 1); i++) {
-      // Start by saying there should be no switching:
-      shouldSwitch = false;
-      /* Check if the next item should
-      switch place with the current item: */
+  //for sorting the playlist
+  //here will go sorter function :O
+  function sortPlaylistArtist() {
+    var list, i, switching, b, shouldSwitch;
+    list = document.getElementById("listTracks");
+    switching = true;
+    /* Make a loop that will continue until
+    no switching has been done: */
+    while (switching) {
+      // Start by saying: no switching is done:
+      switching = false;
+      b = list.getElementsByTagName("LI");
+      // Loop through all list items:
+      for (i = 0; i < (b.length - 1); i++) {
+        // Start by saying there should be no switching:
+        shouldSwitch = false;
+        /* Check if the next item should
+        switch place with the current item: */
 
-      //to get just the artist
+        //to get just the artist
 
-      console.log(b[i].innerText.toLowerCase().split("artist: ")[1].split(",")[0]);
-      if (b[i].innerText.toLowerCase().split("artist: ")[1].split(",")[0] > b[i + 1].innerText.toLowerCase().split("artist: ")[1].split(",")[0]) {
-        /* If next item is alphabetically lower than current item,
-        mark as a switch and break the loop: */
-        shouldSwitch = true;
-        break;
+        console.log(b[i].innerText.toLowerCase().split("artist: ")[1].split(",")[0]);
+        if (b[i].innerText.toLowerCase().split("artist: ")[1].split(",")[0] > b[i + 1].innerText.toLowerCase().split("artist: ")[1].split(",")[0]) {
+          /* If next item is alphabetically lower than current item,
+          mark as a switch and break the loop: */
+          shouldSwitch = true;
+          break;
+        }
+      }
+      if (shouldSwitch) {
+        /* If a switch has been marked, make the switch
+        and mark the switch as done: */
+        b[i].parentNode.insertBefore(b[i + 1], b[i]);
+        switching = true;
       }
     }
-    if (shouldSwitch) {
-      /* If a switch has been marked, make the switch
-      and mark the switch as done: */
-      b[i].parentNode.insertBefore(b[i + 1], b[i]);
-      switching = true;
-    }
-  }
-};
+  };
 
-//to sort by track
-function sortPlaylistTrack() {
-  var list, i, switching, b, shouldSwitch;
-  list = document.getElementById("listTracks");
-  switching = true;
-  /* Make a loop that will continue until
-  no switching has been done: */
-  while (switching) {
-    // Start by saying: no switching is done:
-    switching = false;
-    b = list.getElementsByTagName("LI");
-    // Loop through all list items:
-    for (i = 0; i < (b.length - 1); i++) {
-      // Start by saying there should be no switching:
-      shouldSwitch = false;
-      /* Check if the next item should
-      switch place with the current item: */
+  //to sort by track
+  function sortPlaylistTrack() {
+    var list, i, switching, b, shouldSwitch;
+    list = document.getElementById("listTracks");
+    switching = true;
+    /* Make a loop that will continue until
+    no switching has been done: */
+    while (switching) {
+      // Start by saying: no switching is done:
+      switching = false;
+      b = list.getElementsByTagName("LI");
+      // Loop through all list items:
+      for (i = 0; i < (b.length - 1); i++) {
+        // Start by saying there should be no switching:
+        shouldSwitch = false;
+        /* Check if the next item should
+        switch place with the current item: */
 
-      //to get just the track_id
-      console.log(b[i].innerText.toLowerCase());
-      console.log(parseInt(b[i].innerText.toLowerCase().split("track_id: ")[1].split(",")[0]));
-      if (parseInt(b[i].innerText.toLowerCase().split("track_id: ")[1].split(",")[0]) > parseInt(b[i + 1].innerText.toLowerCase().split("track_id: ")[1].split(",")[0])) {
-        /* If next item is alphabetically lower than current item,
-        mark as a switch and break the loop: */
-        shouldSwitch = true;
-        break;
+        //to get just the track_id
+        console.log(b[i].innerText.toLowerCase());
+        console.log(parseInt(b[i].innerText.toLowerCase().split("track_id: ")[1].split(",")[0]));
+        if (parseInt(b[i].innerText.toLowerCase().split("track_id: ")[1].split(",")[0]) > parseInt(b[i + 1].innerText.toLowerCase().split("track_id: ")[1].split(",")[0])) {
+          /* If next item is alphabetically lower than current item,
+          mark as a switch and break the loop: */
+          shouldSwitch = true;
+          break;
+        }
+      }
+      if (shouldSwitch) {
+        /* If a switch has been marked, make the switch
+        and mark the switch as done: */
+        b[i].parentNode.insertBefore(b[i + 1], b[i]);
+        switching = true;
       }
     }
-    if (shouldSwitch) {
-      /* If a switch has been marked, make the switch
-      and mark the switch as done: */
-      b[i].parentNode.insertBefore(b[i + 1], b[i]);
-      switching = true;
-    }
-  }
-};
+  };
 
-function sortPlaylistAlbum() {
-  var list, i, switching, b, shouldSwitch;
-  list = document.getElementById("listTracks");
-  switching = true;
-  /* Make a loop that will continue until
-  no switching has been done: */
-  while (switching) {
-    // Start by saying: no switching is done:
-    switching = false;
-    b = list.getElementsByTagName("LI");
-    // Loop through all list items:
-    for (i = 0; i < (b.length - 1); i++) {
-      // Start by saying there should be no switching:
-      shouldSwitch = false;
-      /* Check if the next item should
-      switch place with the current item: */
+  function sortPlaylistAlbum() {
+    var list, i, switching, b, shouldSwitch;
+    list = document.getElementById("listTracks");
+    switching = true;
+    /* Make a loop that will continue until
+    no switching has been done: */
+    while (switching) {
+      // Start by saying: no switching is done:
+      switching = false;
+      b = list.getElementsByTagName("LI");
+      // Loop through all list items:
+      for (i = 0; i < (b.length - 1); i++) {
+        // Start by saying there should be no switching:
+        shouldSwitch = false;
+        /* Check if the next item should
+        switch place with the current item: */
 
-      //to get just the artist
-      console.log(b[i].innerText.toLowerCase().split("album: ")[1].split(",")[0]);
-      if (b[i].innerText.toLowerCase().split("album: ")[1].split(",")[0] > b[i + 1].innerText.toLowerCase().split("album: ")[1].split(",")[0]) {
-        /* If next item is alphabetically lower than current item,
-        mark as a switch and break the loop: */
-        shouldSwitch = true;
-        break;
+        //to get just the artist
+        console.log(b[i].innerText.toLowerCase().split("album: ")[1].split(",")[0]);
+        if (b[i].innerText.toLowerCase().split("album: ")[1].split(",")[0] > b[i + 1].innerText.toLowerCase().split("album: ")[1].split(",")[0]) {
+          /* If next item is alphabetically lower than current item,
+          mark as a switch and break the loop: */
+          shouldSwitch = true;
+          break;
+        }
+      }
+      if (shouldSwitch) {
+        /* If a switch has been marked, make the switch
+        and mark the switch as done: */
+        b[i].parentNode.insertBefore(b[i + 1], b[i]);
+        switching = true;
       }
     }
-    if (shouldSwitch) {
-      /* If a switch has been marked, make the switch
-      and mark the switch as done: */
-      b[i].parentNode.insertBefore(b[i + 1], b[i]);
-      switching = true;
-    }
-  }
-};
+  };
 
-function sortPlaylistlength() {
-  var list, i, switching, b, shouldSwitch;
-  list = document.getElementById("listTracks");
-  switching = true;
-  /* Make a loop that will continue until
-  no switching has been done: */
-  while (switching) {
-    // Start by saying: no switching is done:
-    switching = false;
-    b = list.getElementsByTagName("LI");
-    // Loop through all list items:
-    for (i = 0; i < (b.length - 1); i++) {
-      // Start by saying there should be no switching:
-      shouldSwitch = false;
-      /* Check if the next item should
-      switch place with the current item: */
+  function sortPlaylistlength() {
+    var list, i, switching, b, shouldSwitch;
+    list = document.getElementById("listTracks");
+    switching = true;
+    /* Make a loop that will continue until
+    no switching has been done: */
+    while (switching) {
+      // Start by saying: no switching is done:
+      switching = false;
+      b = list.getElementsByTagName("LI");
+      // Loop through all list items:
+      for (i = 0; i < (b.length - 1); i++) {
+        // Start by saying there should be no switching:
+        shouldSwitch = false;
+        /* Check if the next item should
+        switch place with the current item: */
 
-      //to get just the track_id
-      console.log(toSeconds(b[i].innerText.toLowerCase().split("playtime: ")[1].split(",")[0]));
-      if (toSeconds(b[i].innerText.toLowerCase().split("playtime: ")[1].split(",")[0]) > toSeconds(b[i + 1].innerText.toLowerCase().split("playtime: ")[1].split(",")[0])) {
-        /* If next item is alphabetically lower than current item,
-        mark as a switch and break the loop: */
-        shouldSwitch = true;
-        break;
+        //to get just the track_id
+        console.log(toSeconds(b[i].innerText.toLowerCase().split("playtime: ")[1].split(",")[0]));
+        if (toSeconds(b[i].innerText.toLowerCase().split("playtime: ")[1].split(",")[0]) > toSeconds(b[i + 1].innerText.toLowerCase().split("playtime: ")[1].split(",")[0])) {
+          /* If next item is alphabetically lower than current item,
+          mark as a switch and break the loop: */
+          shouldSwitch = true;
+          break;
+        }
+      }
+      if (shouldSwitch) {
+        /* If a switch has been marked, make the switch
+        and mark the switch as done: */
+        b[i].parentNode.insertBefore(b[i + 1], b[i]);
+        switching = true;
       }
     }
-    if (shouldSwitch) {
-      /* If a switch has been marked, make the switch
-      and mark the switch as done: */
-      b[i].parentNode.insertBefore(b[i + 1], b[i]);
-      switching = true;
-    }
-  }
 
-}
+  }
 };
 
 //upon window load we update the logged in person's username
-window.onload = function() {
+window.onload = function () {
 
   fetch("/api/auth/loggedin", {
     method: 'GET',
     headers: {
-      
+
     },
   })
     .then(res => res.json()
@@ -511,7 +550,7 @@ window.onload = function() {
         if (data.status != 400) {
           console.log(data);
           document.getElementById("currentUser").innerText = data.username;
-          
+
 
         } else {
           return;
@@ -522,3 +561,10 @@ window.onload = function() {
 
 
 };
+
+//Empty the Output box
+function emptyDOM(element) {
+  while (element.firstElementChild) {
+    element.firstElementChild.remove();
+  }
+}

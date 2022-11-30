@@ -1,122 +1,130 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="utf-8">
-<title>Playlists</title>
-<link rel="stylesheet" href="style.css">
-<!-- Add icon library -->
+    <meta charset="utf-8">
+    <title>Playlists</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Add icon library -->
 </head>
+
 <body>
 
-  <div class="topnav">
-    <a href="index.html">Home</a>
-    <a href="login.html">Login</a>
-    <a class="active" href="playlist.html">Playlists</a>
-    <a href="DMCA_POLICY.pdf">DMCA Policy</a>
-    <a href="index.html">AUP Policy</a>
-    <b id="currentUser">Guest</b>
-    
-  </div>
+    <div class="topnav">
+        <a href="index.html">Home</a>
+        <a href="login.html">Login</a>
+        <a class="active" href="playlist.html">Playlists</a>
+        <a href="DMCA_POLICY.pdf">DMCA Policy</a>
+        <a href="index.html">AUP Policy</a>
+        <b id="currentUser">Guest</b>
+
+    </div>
 
 
     <!--to add some space betweeb divs-->
     <br></br>
     <br></br>
 
-    
-
-<div class="admin">
-    <h2>View User-Created Playlists</h2>
-    
-
-    <span id="currentPlaylists">
-        <h4>View Public Playlists</h4>
-        <label for="Available Lists">Choose a Playlist:</label>
-
-        <select name="playsL" id="playsL">
-         </select>
-        <button id="viewList">View</button>
-
-        <br><br>
-                <!--For the rating system-->
-                <div class="rate">
-                    <input type="radio" id="star5" name="rate" value="5" />
-                    <label for="star5" title="text">5 stars</label>
-                    <input type="radio" id="star4" name="rate" value="4" />
-                    <label for="star4" title="text">4 stars</label>
-                    <input type="radio" id="star3" name="rate" value="3" />
-                    <label for="star3" title="text">3 stars</label>
-                    <input type="radio" id="star2" name="rate" value="2" />
-                    <label for="star2" title="text">2 stars</label>
-                    <input type="radio" id="star1" name="rate" value="1" />
-                    <label for="star1" title="text">1 star</label>
-                  </div>
-                  <br></br>
-        <br>
-        <italic>Add a review to selected playlist</italic>
-        </br>
-        <textarea id="review" rows="9" cols="60"></textarea>
-        <button id="addTrack">Add</button>
-        </br></br>
 
 
-        
-        </br></br>
-        <h4 id="cTrack">Current Tracks</h4>
-        <ul id="listTracks"></ul>
-        <button id="sortArtistPlaylist" >Playlist by artist</button>
-        <button id="sortTrackPlaylist" >Playlist by track</button>
-        <button id="sortAlbumPlaylist" >Playlist by album</button>
-        <button id="sortLengthPlaylist" >Playlist by length</button>
-        
-        
-    </span>
-</div>
-
-<br></br>
-<br></br>
+    <div class="admin">
+        <h2>View User-Created Playlists</h2>
 
 
-<div class="admin">
-    <h2>Manage My Playlists</h2>
-    <span>
-        <h4>Add New Playlist</h4>
-        Name: <input type="text" id="playlistName" maxlength="20">
-        <button id="addPlaylist">Add</button>
-    </span>
+        <span id="currentPlaylists">
+            <h4>View Public Playlists</h4>
+            <label for="Available Lists">Choose a Playlist:</label>
 
-    <span id="currentPlaylists">
-        <h4>View Current Playlists</h4>
-        <label for="Available Lists">Choose a Playlist:</label>
+            <select name="playsL" id="playsL">
+            </select>
+            <button id="viewList">View</button>
 
-        <select name="playsLAll" id="playsLAll">
-         </select>
-        <button id="viewAllPlaylist">View</button>
-        <button id="deleteList">Delete</button>
-        <br><br>Add a Track_id to selected playlist: <input type="text" id="trackIDField" maxlength="7">
-        <button id="addTrackToPlaylist">Add</button>
-        </br></br>
-        Delete a track from selected playlist: <input type="text" id="trackNameDelete" maxlength="7">
-        <button id="deleteTrack">Delete</button>
-        
-        <h4 id="cTrack">Current Tracks</h4>
-        <ul id="listTracks"></ul>
-        <button id="sortArtistPlaylist" >Playlist by artist</button>
-        <button id="sortTrackPlaylist" >Playlist by track</button>
-        <button id="sortAlbumPlaylist" >Playlist by album</button>
-        <button id="sortLengthPlaylist" >Playlist by length</button>
-        
-        
-    </span>
-</div>
+            <br><br>
+            <!--For the rating system-->
+            <div class="rate">
+                <input type="radio" id="star5" name="rate" value="5" />
+                <label for="star5" title="text">5 stars</label>
+                <input type="radio" id="star4" name="rate" value="4" />
+                <label for="star4" title="text">4 stars</label>
+                <input type="radio" id="star3" name="rate" value="3" />
+                <label for="star3" title="text">3 stars</label>
+                <input type="radio" id="star2" name="rate" value="2" />
+                <label for="star2" title="text">2 stars</label>
+                <input type="radio" id="star1" name="rate" value="1" />
+                <label for="star1" title="text">1 star</label>
+            </div>
+            <br></br>
+            <br>
+            <italic>Add a review to selected playlist</italic>
+            </br>
+            <textarea id="review" rows="9" cols="60"></textarea>
+            <button id="addTrack">Add</button>
+            </br></br>
 
 
 
-<!--to add some space betweeb divs-->
-<br></br>
-<br></br>
+            </br></br>
+            <h4 id="cTrack">Current Tracks</h4>
+            <ul id="listTracks"></ul>
+            <button id="sortArtistPlaylist">Playlist by artist</button>
+            <button id="sortTrackPlaylist">Playlist by track</button>
+            <button id="sortAlbumPlaylist">Playlist by album</button>
+            <button id="sortLengthPlaylist">Playlist by length</button>
 
-<div id="bottom">SE3316-Lab-4 By Kevin Abdo & Jack Bird ©</div>
-<script defer src="playlist.js"></script>
+
+        </span>
+    </div>
+
+    <br></br>
+    <br></br>
+
+
+    <div class="admin">
+        <h2>Manage My Playlists</h2>
+        <span>
+            <h4>Add New Playlist</h4>
+            Name: <input type="text" id="playlistName" maxlength="20">
+            <button id="addPlaylist">Add</button>
+        </span>
+
+        <span id="currentPlaylists">
+            <h4>View Current Playlists</h4>
+            <label for="Available Lists">Choose a Playlist:</label>
+
+            <select name="playsLAll" id="playsLAll">
+            </select>
+            <button id="viewAllPlaylist">View</button>
+            <button id="deleteList">Delete</button>
+            <br><br>Add a Track_id to selected playlist: <input type="text" id="trackIDField" maxlength="7">
+            <button id="addTrackToPlaylist">Add</button>
+            </br></br>Delete a track from selected playlist: <input type="text" id="trackNameDelete" maxlength="7">
+            <button id="deleteTrack">Delete</button>
+            </br></br>
+            View all tracks in your playlist: <select name="playsLAll" id="allPlaylists">
+            </select>
+            <button id="viewTracksInPlaylist">View Tracks</button>
+
+
+
+            <h4 id="cTrack">Current Tracks</h4>
+            <ul id="listPlaylistTracks"></ul>
+            <button id="sortArtistPlaylist">Playlist by artist</button>
+            <button id="sortTrackPlaylist">Playlist by track</button>
+            <button id="sortAlbumPlaylist">Playlist by album</button>
+            <button id="sortLengthPlaylist">Playlist by length</button>
+
+
+        </span>
+    </div>
+
+
+
+    <!--to add some space betweeb divs-->
+    <br></br>
+    <br></br>
+
+    <div id="bottom">SE3316-Lab-4 By Kevin Abdo & Jack Bird ©</div>
+    <script defer src="playlist.js"></script>
 </body>
+
 </html>
