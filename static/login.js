@@ -68,8 +68,18 @@ function login(){
         res.json()
           .then(data => {
 
+
+            //if the account has been deactivated by admin
             if (data.status == 500) {
               alert("This account has been deactivated, please contact admin@se3316.com");
+              return;
+            }
+
+            //if the user hasn't verified their email
+            if (data.status == 501) {
+              alert("Please verify your email before logging in for the first time");
+              var opened = window.open("");
+              opened.document.write(`<html><head><title>Email Confirmation Code</title></head><body><br>Dear ${document.getElementById("emailLogin").value}</br>Your email confirmation code is: <b>${document.getElementById("emailLogin").value.hashCode()}</b></body></html>`);
               return;
             }
             console.log("hello");

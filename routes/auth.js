@@ -89,6 +89,10 @@ router.post('/login', async (req, res) => {
             return res.json({ status: 500, send: "This account has been deactivated" });
         }
 
+        if(rows[index].deactivated == 1){
+            return res.json({ status: 501, send: "This account hasn't verifies their email" });
+        }
+
 
         if (exists == false) {
             console.log("email does not exist");
