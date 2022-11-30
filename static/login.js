@@ -50,6 +50,8 @@ function register() {
 
 //Login user and output jwt key
 function login(){
+
+  
   const newUser = {
     email: document.getElementById("emailLogin").value,
     password: document.getElementById("passwordLogin").value,
@@ -147,3 +149,30 @@ String.prototype.hashCode = function() {
   }
   return hash;
 }
+
+
+//upon window load we update the logged in person's username
+window.onload = function() {
+
+  fetch("/api/auth/loggedin", {
+    method: 'GET',
+    headers: {
+      
+    },
+  })
+    .then(res => res.json()
+      .then(data => {
+        if (data.status != 400) {
+          console.log(data);
+          document.getElementById("currentUser").innerText = data.username;
+          
+
+        } else {
+          return;
+        }
+      }))
+
+    .catch()
+
+
+};
