@@ -5,7 +5,7 @@ module.exports = function (req, res, next) {
 
     const token = req.header('Cookie');
 
-    console.log(token)
+   // console.log(token)
     if (token === undefined) {
         return res.json({status: 400, message: "Invalid Token"});
     } else {

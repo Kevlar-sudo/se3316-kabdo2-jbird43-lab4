@@ -52,7 +52,7 @@ function createPlaylist() {
 
 };
 
-
+//View all playlists of a logged in user
 function viewAllPlaylists() {
   fetch("/api/auth/playlist", {
     method: 'GET',
@@ -71,7 +71,6 @@ function viewAllPlaylists() {
       }));
 
 }
-
 
 
 //delete playlist
