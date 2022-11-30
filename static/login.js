@@ -67,6 +67,12 @@ function login(){
       if (res.ok) {
         res.json()
           .then(data => {
+
+            if (data.status == 500) {
+              alert("This account has been deactivated, please contact admin@se3316.com");
+              return;
+            }
+            console.log("hello");
             console.log(data);
             //add the new user
           })

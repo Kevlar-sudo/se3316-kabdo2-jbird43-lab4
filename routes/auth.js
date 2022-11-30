@@ -61,7 +61,7 @@ router.post('/login', async (req, res) => {
 
 
     //Checking if email exists
-    db.all(`SELECT username, email, password FROM users`, [], async (err, rows) => {
+    db.all(`SELECT username, email, password, administrator, deactivated FROM users`, [], async (err, rows) => {
         if (err) {
             throw err;
         }
@@ -78,9 +78,17 @@ router.post('/login', async (req, res) => {
             username: rows[index].username,
             email: rows[index].email,
             password: rows[index].password,
-            administrator: rows[index].administrator
+            administrator: rows[index].administrator,
+            deactivated: rows[index].deactivated
 
         };
+
+        console.log("deactivation status is: "+rows[index].deactivated);
+
+        if(rows[index].deactivated == 2){
+            return res.json({ status: 500, send: "This account has been deactivated" });
+        }
+
 
         if (exists == false) {
             console.log("email does not exist");
