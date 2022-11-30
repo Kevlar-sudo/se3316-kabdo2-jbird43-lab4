@@ -8,32 +8,32 @@ let db = new sqlite3.Database('./music.db');
 //Get all playlists created by a user
 router.get('/playlist', verify, (req, res) => {
 
-console.log(req.user._id);
-  let username =  req.user._id;
-  let playlistNames = [];
-  let found = false;
-  let k = 0;
+    console.log(req.user._id);
+    let username = req.user._id;
+    let playlistNames = [];
+    let found = false;
+    let k = 0;
 
-   db.all(`SELECT username, playlistName FROM playlists`, [], async (err, rows) => {
-    if (err) {
-        throw err;
-    }
-    for (let i = 0; i < rows.length; i++) {
-        if (rows[i].username == username) {
-            console.log(rows[i].playlistName);
-            playlistNames[k] = (rows[i].playlistName);
-            found = true;
-            k++;
-    }
-}
+    db.all(`SELECT username, playlistName FROM playlists`, [], async (err, rows) => {
+        if (err) {
+            throw err;
+        }
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].username == username) {
+                console.log(rows[i].playlistName);
+                playlistNames[k] = (rows[i].playlistName);
+                found = true;
+                k++;
+            }
+        }
 
-if(!found){
-    return res.json({staus: 400, error: err});
-}else{
-    console.log(playlistNames);
-    res.json({status: 200, message: "found all playlists", array: playlistNames});
-}
-});
+        if (!found) {
+            return res.json({ staus: 400, error: err });
+        } else {
+            console.log(playlistNames);
+            res.json({ status: 200, message: "found all playlists", array: playlistNames });
+        }
+    });
 
 
 })
@@ -42,10 +42,8 @@ if(!found){
 //Add a playlist to the playlist db
 router.put('/playlist', verify, (req, res) => {
 
+    //Get the loged in username
     const user = req.user._id;
-    //Get the user from cookies
-   // let [auth, usernameValue] = user.split(';');
-    //let [key, value] = usernameValue.split('=');
 
     const username = user;
     const playlistName = req.body.playlistName;
@@ -115,6 +113,49 @@ router.put('/playlist', verify, (req, res) => {
 });
 
 //Created a create review put request, we prob need to move it to the authentication.js file and 
+
+
+router.put('/playlist/track', verify, (req, res) => {
+
+    const user = req.user._id;
+    const username = user;
+    const trackID = req.body.trackID;
+    const playlistName = req.body.playlistName;
+    let index = 0;
+    let exist = false;
+
+
+    // console.log(trackID);
+    db.all(`SELECT track_id, track_title FROM tracks`, [], async (err, rows) => {
+
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].track_id.toString() == trackID) {
+                console.log("Track Exists");
+                index = i;
+                exist = true;
+            }
+        }
+
+        if (exist) {
+            db.run(`INSERT INTO playlistTracks(username, playlistName, trackID, trackName) VALUES(?,?,?,?)`, [username, playlistName, rows[index].track_id, rows[index].track_title], function (err) {
+                if (err) {
+                    return res.json({ status: 300, success: false, error: err })
+                } else {
+                    // get the last insert id
+                    console.log(`A row has been inserted with rowid ${this.lastID}`);
+                    res.json({ status: 200, success: true })
+                }
+            });
+        }else{
+            console.log("Track with that id does not exist");
+           return  res.json({ status: 400, send: "Track does not exist"})
+        }
+        });
+
+    });
+
+
+
 
 
 
