@@ -187,6 +187,38 @@ router.post('/playlist/track', verify, (req, res) => {
 
 });
 
+router.delete('/playlist/track', verify, (req, res) => {
+
+    let username = req.user._id;
+    let playlist = req.body.playlistName;
+    let trackID = req.body.trackID;
+
+    let exist = false;
+
+    db.all(`SELECT username, playlistName, trackID FROM playlistTracks`, [], async (err, rows) => {
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].username == username && rows[i].playlistName == playlist && rows[i].trackID == trackID) {
+                exist = true;
+            }
+        }
+
+        if (exist) {
+
+            db.run(`DELETE FROM playlistTracks WHERE trackID=${trackID}`, (err) => {
+                if (err) return res.json({ status: 300, success: false, error: err });
+
+
+                res.json({status: 200, success: true});
+                console.log("successful delete");
+            });
+        }
+
+    });
+
+
+
+});
+
 
 router.put("/reviews", verify, (req, res) => {
 
@@ -228,20 +260,20 @@ router.get('/loggedin', verify, (req, res) => {
 
     try {
         db.all(sql, [], (err, rows) => {
-          if (err) return res.json({ status: 300, success: false, error: err });
-  
-          if (rows.length < 1)
-            return res.json({ status: 300, success: false, error: "No match" });
-  
-          return res.json({ status: 200, data: rows, success: true });
+            if (err) return res.json({ status: 300, success: false, error: err });
+
+            if (rows.length < 1)
+                return res.json({ status: 300, success: false, error: "No match" });
+
+            return res.json({ status: 200, data: rows, success: true });
         });
-      } catch (error) {
+    } catch (error) {
         return res.json({
-          status: 400,
-          success: false,
+            status: 400,
+            success: false,
         });
-      }
-    });
+    }
+});
 
 //     res.json({ status: 200, message: "got the logged in user", username: req.user._id });
 

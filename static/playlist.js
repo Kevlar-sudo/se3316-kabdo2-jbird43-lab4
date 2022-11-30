@@ -127,13 +127,19 @@ function viewTracks() {
   })
     .then(res => res.json()
       .then(data => {
+
+        if(data.array != undefined){
         for (let i = 0; i < data.array.length; i++) {
 
           item.appendChild(document.createTextNode(`Track Name: ${data.array[i]}  Album Name: ${data.array2[i]}`));
           item.appendChild(document.createElement('br'));
 
         }
+      }else{
+        item.appendChild(document.createTextNode("There are no tracks in this playlist"));
+        item.appendChild(document.createElement('br'));
 
+      }
 
         tracksList.appendChild(item);
 
@@ -143,6 +149,101 @@ function viewTracks() {
       }));
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -537,9 +638,6 @@ function addTrack() {
 };
 
 //upon window load we update the logged in person's username
-
-window.onload = function () {
-
 window.onload = function() {
   document.getElementById("adminControl").classList.add("hidden");
 
