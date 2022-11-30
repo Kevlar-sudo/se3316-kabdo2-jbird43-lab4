@@ -117,8 +117,7 @@ router.put('/playlist', verify, (req, res) => {
 
 router.put('/playlist/track', verify, (req, res) => {
 
-    const user = req.user._id;
-    const username = user;
+    const username = req.user._id;
     const trackID = req.body.trackID;
     const playlistName = req.body.playlistName;
     let index = 0;
@@ -127,7 +126,9 @@ router.put('/playlist/track', verify, (req, res) => {
 
     // console.log(trackID);
     db.all(`SELECT track_id, track_title FROM tracks`, [], async (err, rows) => {
-
+        if (err) {
+            throw err;
+        }
         for (let i = 0; i < rows.length; i++) {
             if (rows[i].track_id.toString() == trackID) {
                 console.log("Track Exists");
@@ -140,19 +141,19 @@ router.put('/playlist/track', verify, (req, res) => {
             db.run(`INSERT INTO playlistTracks(username, playlistName, trackID, trackName) VALUES(?,?,?,?)`, [username, playlistName, rows[index].track_id, rows[index].track_title], function (err) {
                 if (err) {
                     return res.json({ status: 300, success: false, error: err })
-                } else {
-                    // get the last insert id
-                    console.log(`A row has been inserted with rowid ${this.lastID}`);
-                    res.json({ status: 200, success: true })
                 }
+                // get the last insert id
+                console.log(`A row has been inserted with rowid ${this.lastID}`);
+                res.json({ status: 200, success: true })
             });
-        }else{
+        } else {
             console.log("Track with that id does not exist");
-           return  res.json({ status: 400, send: "Track does not exist"})
+            return res.json({ status: 400, send: "Track does not exist" })
         }
-        });
-
     });
+
+
+});
 
 
 
