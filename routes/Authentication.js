@@ -117,7 +117,7 @@ router.delete('/playlist', verify, (req, res) => {
     const username = req.user._id;
     const playlistName = req.body.playlistName;
 
-    
+
 
 
 });
@@ -201,30 +201,33 @@ router.post('/playlist/track', verify, (req, res) => {
 router.delete('/playlist/track', verify, (req, res) => {
 
     let username = req.user._id;
-    let playlist = req.body.playlistName;
+    console.log(username);
+    let playlistName = req.body.playlistName;
+    console.log(`Playlist Name: ${playlistName}`);
     let trackID = req.body.trackID;
-
+    let index = 0;
     let exist = false;
 
     db.all(`SELECT username, playlistName, trackID FROM playlistTracks`, [], async (err, rows) => {
         for (let i = 0; i < rows.length; i++) {
-            if (rows[i].username == username && rows[i].playlistName == playlist && rows[i].trackID == trackID) {
+            if (rows[i].username == username && rows[i].playlistName == playlistName && rows[i].trackID == trackID) {
                 exist = true;
+                index=i;
             }
         }
-
-        if (exist) {
-
-            db.run(`DELETE FROM playlistTracks WHERE trackID=${trackID}`, (err) => {
-                if (err) return res.json({ status: 300, success: false, error: err });
+    if (exist) {
+        db.run(`DELETE FROM playlistTracks WHERE username=? AND trackID=? AND playlistName=?`, username, trackID, playlistName, (err) => {
+            if (err) return res.json({ status: 300, success: false, error: err });
 
 
-                res.json({status: 200, success: true});
-                console.log("successful delete");
-            });
-        }
+            res.json({ status: 200, success: true });
+            console.log("successful delete");
+        });
+    }else{
+        return  res.json({ status: 400, message: "TRACK WITH THAT PLAYIST DOES NOT EXIST"});
+    }
+});
 
-    });
 
 
 
@@ -292,56 +295,56 @@ router.post('/grant', verify, async (req, res) => {
 
     let exists = false;
     let index = 0;
-    
+
     const {
         username
     } = req.body;
-    
-    
-    
-   //Checking if email exists
-   db.all(`SELECT username FROM users`, [], async (err, rows) => {
-    if (err) {
-        throw err;
-    }
-    for (let i = 0; i < rows.length; i++) {
-        if (rows[i].username == username) {
-            console.log("Username exists");
-            exists = true;
-            index = i;
+
+
+
+    //Checking if email exists
+    db.all(`SELECT username FROM users`, [], async (err, rows) => {
+        if (err) {
+            throw err;
+        }
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].username == username) {
+                console.log("Username exists");
+                exists = true;
+                index = i;
+            }
+
         }
 
-    }
+        const userDetails = {
+            username: rows[index].username,
+            email: rows[index].email,
+            password: rows[index].password,
+            administrator: rows[index].administrator,
+            deactivated: rows[index].deactivated
 
-    const userDetails = {
-        username: rows[index].username,
-        email: rows[index].email,
-        password: rows[index].password,
-        administrator: rows[index].administrator,
-        deactivated: rows[index].deactivated
+        };
 
-    };
+        if (exists == false) {
+            console.log("user does not exist");
+            return res.json({ status: 400, send: "Username does not exist" });
+        } else {
+            try {
+                // set the deactivated column for the account to 0
+                db.run(`UPDATE users SET administrator = 1 WHERE username = '${rows[index].username}'`, [], function (err) {
+                    if (err) {
+                        return res.json({ status: 300, success: false, error: err })
+                    }
+                    // console log for confirmation
+                    console.log(`We have updated administrator status`);
+                    return res.json({ status: 200, success: true })
+                });
+            } catch (err) {
+                return res.json({ status: 400, send: err });
+            }
 
-    if (exists == false) {
-        console.log("user does not exist");
-        return res.json({ status: 400, send: "Username does not exist" });
-    } else {
-        try {
-            // set the deactivated column for the account to 0
-            db.run(`UPDATE users SET administrator = 1 WHERE username = '${rows[index].username}'`, [], function (err) {
-                if (err) {
-                    return res.json({ status: 300, success: false, error: err })
-                }
-                // console log for confirmation
-                console.log(`We have updated administrator status`);
-                return res.json({ status: 200, success: true })
-            });
-        } catch (err) {
-            return res.json({ status: 400, send: err });
         }
-        
-    }
-});
+    });
 
 
 });
@@ -354,56 +357,56 @@ router.post('/deactivate', verify, async (req, res) => {
 
     let exists = false;
     let index = 0;
-    
+
     const {
         username
     } = req.body;
-    
-    
-    
-   //Checking if user exists
-   db.all(`SELECT username FROM users`, [], async (err, rows) => {
-    if (err) {
-        throw err;
-    }
-    for (let i = 0; i < rows.length; i++) {
-        if (rows[i].username == username) {
-            console.log("Username exists");
-            exists = true;
-            index = i;
+
+
+
+    //Checking if user exists
+    db.all(`SELECT username FROM users`, [], async (err, rows) => {
+        if (err) {
+            throw err;
+        }
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].username == username) {
+                console.log("Username exists");
+                exists = true;
+                index = i;
+            }
+
         }
 
-    }
+        const userDetails = {
+            username: rows[index].username,
+            email: rows[index].email,
+            password: rows[index].password,
+            administrator: rows[index].administrator,
+            deactivated: rows[index].deactivated
 
-    const userDetails = {
-        username: rows[index].username,
-        email: rows[index].email,
-        password: rows[index].password,
-        administrator: rows[index].administrator,
-        deactivated: rows[index].deactivated
+        };
 
-    };
+        if (exists == false) {
+            console.log("user does not exist");
+            return res.json({ status: 400, send: "Username does not exist" });
+        } else {
+            try {
+                // set the deactivated column for the account to 2, meaning that the account has been deactivated by an admin
+                db.run(`UPDATE users SET deactivated = 2 WHERE username = '${rows[index].username}'`, [], function (err) {
+                    if (err) {
+                        return res.json({ status: 300, success: false, error: err })
+                    }
+                    // console log for confirmation
+                    console.log(`We have updated activation status`);
+                    return res.json({ status: 200, success: true })
+                });
+            } catch (err) {
+                return res.json({ status: 400, send: err });
+            }
 
-    if (exists == false) {
-        console.log("user does not exist");
-        return res.json({ status: 400, send: "Username does not exist" });
-    } else {
-        try {
-            // set the deactivated column for the account to 2, meaning that the account has been deactivated by an admin
-            db.run(`UPDATE users SET deactivated = 2 WHERE username = '${rows[index].username}'`, [], function (err) {
-                if (err) {
-                    return res.json({ status: 300, success: false, error: err })
-                }
-                // console log for confirmation
-                console.log(`We have updated activation status`);
-                return res.json({ status: 200, success: true })
-            });
-        } catch (err) {
-            return res.json({ status: 400, send: err });
         }
-        
-    }
-});
+    });
 
 
 });
@@ -414,56 +417,56 @@ router.post('/activate', verify, async (req, res) => {
 
     let exists = false;
     let index = 0;
-    
+
     const {
         username
     } = req.body;
-    
-    
-    
-   //Checking if user exists
-   db.all(`SELECT username FROM users`, [], async (err, rows) => {
-    if (err) {
-        throw err;
-    }
-    for (let i = 0; i < rows.length; i++) {
-        if (rows[i].username == username) {
-            console.log("Username exists");
-            exists = true;
-            index = i;
+
+
+
+    //Checking if user exists
+    db.all(`SELECT username FROM users`, [], async (err, rows) => {
+        if (err) {
+            throw err;
+        }
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].username == username) {
+                console.log("Username exists");
+                exists = true;
+                index = i;
+            }
+
         }
 
-    }
+        const userDetails = {
+            username: rows[index].username,
+            email: rows[index].email,
+            password: rows[index].password,
+            administrator: rows[index].administrator,
+            deactivated: rows[index].deactivated
 
-    const userDetails = {
-        username: rows[index].username,
-        email: rows[index].email,
-        password: rows[index].password,
-        administrator: rows[index].administrator,
-        deactivated: rows[index].deactivated
+        };
 
-    };
+        if (exists == false) {
+            console.log("user does not exist");
+            return res.json({ status: 400, send: "Username does not exist" });
+        } else {
+            try {
+                // set the deactivated column for the account to 0
+                db.run(`UPDATE users SET deactivated = 0 WHERE username = '${rows[index].username}'`, [], function (err) {
+                    if (err) {
+                        return res.json({ status: 300, success: false, error: err })
+                    }
+                    // console log for confirmation
+                    console.log(`We have updated activation status`);
+                    return res.json({ status: 200, success: true })
+                });
+            } catch (err) {
+                return res.json({ status: 400, send: err });
+            }
 
-    if (exists == false) {
-        console.log("user does not exist");
-        return res.json({ status: 400, send: "Username does not exist" });
-    } else {
-        try {
-            // set the deactivated column for the account to 0
-            db.run(`UPDATE users SET deactivated = 0 WHERE username = '${rows[index].username}'`, [], function (err) {
-                if (err) {
-                    return res.json({ status: 300, success: false, error: err })
-                }
-                // console log for confirmation
-                console.log(`We have updated activation status`);
-                return res.json({ status: 200, success: true })
-            });
-        } catch (err) {
-            return res.json({ status: 400, send: err });
         }
-        
-    }
-});
+    });
 
 
 });
