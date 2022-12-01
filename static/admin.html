@@ -12,10 +12,11 @@
     <a href="index.html">Home</a>
     <a href="login.html">Login</a>
     <a href="playlist.html">Playlists</a>
-    <a href="DMCA_POLICY.pdf">DMCA Policy</a>
-    <a href="AUP_POLICY.pdf">AUP Policy</a>
+    <a href="dmca.txt">DMCA Policy</a>
+    <a href="aup.txt">AUP Policy</a>
+    <a href="sp.txt">S&P Policy</a>
     <b id="currentUser">Guest</b>
-    <a class="active" href="example.com" id="adminControl">Admin Control</a>
+    <a class="active" href="admin.html" id="adminControl">Admin Control</a>
     
   </div>
 
@@ -75,6 +76,41 @@
         
     </span>
 </div>
+<br></br>
+<br></br>
+<div class="admin">
+    <h2>Update Policies</h2>
+    
+
+    <span id="currentPlaylists">
+        
+        <label for="Write to file">DMCA</label>
+        <br>
+        <textarea id="dmcaContent" rows="12" cols="100"></textarea>
+        </br>
+        <button id="loadDMCA">Load Current DMCA</button>
+        <button id="writeDMCA">Save New DMCA</button>
+
+        <br></br>
+        <label for="Write to file">Security & Privacy Policy</label>
+        <br>
+        <textarea id="privacyContent" rows="12" cols="100"></textarea>
+        </br>
+        <button id="loadSP">Load Current S&P Policy</button>
+        <button id="writePrivacy">Save New S&P Policy</button>
+
+        <br></br>
+        <label for="Write to file">AUP</label>
+        <br>
+        <textarea id="aupContent" rows="12" cols="100"></textarea>
+        </br>
+        <button id="loadAUP">Load Current AUP</button>
+        <button id="writeAUP">Save New AUP</button>
+        
+        
+    </span>
+</div>
+
 
 
 
