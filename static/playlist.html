@@ -87,6 +87,16 @@
         <span>
             <h4>Add New Playlist</h4>
             Name: <input type="text" id="playlistName" maxlength="20">
+            <br><br>
+            Public:
+            <label for="star5" title="text">Yes</label>
+            <input type="radio" id="yes" name="rate" value="5" />
+            <label for="star5" title="text">No</label>
+            <input type="radio" id="no" name="rate" value="5" />
+            <br><br>
+            Add a playlist description
+            <br>
+            <textarea id="addPlaylistDescription" rows="9" cols="60"></textarea>
             <button id="addPlaylist">Add</button>
         </span>
 
@@ -99,7 +109,8 @@
             <button id="viewAllPlaylist">View</button>
             <br><br>Add a Track_id to selected playlist: <input type="text" id="trackIDField" maxlength="7">
             <button id="addTrackToPlaylist">Add</button>
-            </br></br>Delete a track from selected playlist: <select name="deleteTrackPlaylist" id="deleteTrackPlaylist">
+            </br></br>Delete a track from selected playlist: <select name="deleteTrackPlaylist"
+                id="deleteTrackPlaylist">
             </select> <input type="text" id="trackNameDelete" maxlength="7">
             <button id="deleteTrack">Delete</button>
             </br></br>

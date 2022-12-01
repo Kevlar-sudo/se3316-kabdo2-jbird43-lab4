@@ -29,9 +29,21 @@ function createPlaylist() {
     return;
   }
 
+  var publicValue = 0;
+
+  if (document.getElementById("yes").checked == true) {
+    publicValue = 1;
+  } else if (document.getElementById("no").checked == true) {
+    publicValue = 0;
+  } else {
+    publicValue = 0;
+  }
+
   const playlist = {
 
-    playlistName: document.getElementById("playlistName").value
+    playlistName: document.getElementById("playlistName").value,
+    public: publicValue,
+    description: document.getElementById("addPlaylistDescription").value
   }
 
   //Need to add HTML to tell user that playlist was added
@@ -122,6 +134,7 @@ function addTrackToPlaylist() {
 
 };
 
+//View all tracks in a playlist
 function viewTracks() {
   const tracksList = document.getElementById('listPlaylistTracks');
   const item = document.createElement('li');
