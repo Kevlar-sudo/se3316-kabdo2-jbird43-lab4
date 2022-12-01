@@ -27,6 +27,7 @@ window.onload = function() {
             document.getElementById("adminControl").classList.add("visible");
 
             getUsers();
+            getPlaylists();
           
             }
   
@@ -329,4 +330,68 @@ function currentSp(){
 
     .catch()
 
+}
+
+const playList = document.getElementById("playsL");
+
+//to get all the playlists
+function getPlaylists()
+      {fetch("/api/auth/playlist", {
+        method: 'GET',
+        headers: {
+          
+        },
+      })
+        .then(res => res.json()
+          .then(data => {
+            if (data.status != 400) {
+              
+              for(j =0; j<data.array.length;j++)
+              {console.log(data.array[j]);
+              var playOption = document.createElement("option");
+              playOption.text = data.array[j];
+              playList.add(playOption);
+              
+              }
+    
+            } else {
+              return;
+            }
+          }))
+    
+        .catch()};
+
+//to get all the reviews for that specific playlist
+document.getElementById("showReviews").addEventListener('click',getReviews);
+
+
+const reviewList = document.getElementById("reviewsL");
+
+function getReviews(){
+  
+  fetch(`/api/auth/reviews/${document.getElementById("playsL").value}`, {
+    method: 'GET',
+    
+  })
+    .then(res => res.json()
+      .then(data => {
+        if (data.status != 400) {
+          console.log(data);
+          console.log(data.data.length);
+          for(x =0; x<data.data.length;x++){
+            //do something
+            console.log(data.data[x].username+" ON "+data.data[x].reviewDate+" RATED "+data.data[x].rating);
+            var revOption = document.createElement("option");
+            revOption.text = data.data[x].username+" ON "+data.data[x].reviewDate+" RATED "+data.data[x].rating;
+            reviewList.add(revOption);
+
+          }
+          
+
+        } else {
+          return;
+        }
+      }))
+
+    .catch()
 }

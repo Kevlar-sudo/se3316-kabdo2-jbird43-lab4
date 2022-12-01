@@ -559,4 +559,38 @@ router.post('/activate', verify, async (req, res) => {
 
 });
 
+//getting all reviews for a specific playlist
+router.get("/reviews/:playlistname", verify, (req, res) => {
+
+        try {
+
+            sql = `SELECT * FROM 'reviews' WHERE playlistName = '${req.params.playlistname}'`;
+            db.all(sql, [], (err, rows) => {
+                if (err) return res.json({ status: 300, success: false, error: err });
+    
+                if (rows.length < 1)
+                    return res.json({ status: 300, success: false, error: "No match" });
+    
+                return res.json({ status: 200, data: rows, success: true });
+            });
+        } catch (error) {
+            return res.json({
+                status: 400,
+                success: false,
+            });
+        }
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+
 module.exports = router;
