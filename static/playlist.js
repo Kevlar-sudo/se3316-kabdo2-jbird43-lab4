@@ -157,11 +157,46 @@ function viewTracks() {
     .then(res => res.json()
       .then(data => {
 
-        if (data.array != undefined) {
-          for (let i = 0; i < data.array.length; i++) {
+        console.log(data.data.length);
+        console.log(data.data[0]);
+        if (data.data != undefined) {
+          for (let i = 0; i < data.data.length; i++) {
 
-            item.appendChild(document.createTextNode(`Track Name: ${data.array[i]}  Album Name: ${data.array2[i]}`));
+            item.appendChild(document.createTextNode(`Track Id: ${data.data[i].trackID},  Track Name: ${data.data[i].trackName}`));
             item.appendChild(document.createElement('br'));
+            item.appendChild(document.createElement('br'));
+
+            console.log(data.data[i]);
+
+            //for the youtube button
+            // creating button element
+             var youtubeButton = document.createElement("button");
+
+            //setting its id
+             youtubeButton.setAttribute('id',"button"+i);
+       
+            // creating text to be
+            //displayed on button
+            var text = document.createTextNode("Play On Youtube™");
+            
+            // appending text to button
+            youtubeButton.appendChild(text);
+
+            // appending button to div
+            item.appendChild(youtubeButton); 
+
+            item.appendChild(document.createElement("br"));
+            item.appendChild(document.createElement("br"));
+            item.appendChild(document.createElement('br'));
+
+            //l.appendChild(div);
+            
+            //add a function to the newly created button that searches youtube based on the song name and artist
+            youtubeButton.addEventListener("click", function (){
+              //we use a query youtube search, we convert the handle and artistN textNodes into strings and then slice them appropriately to extract our wanted data
+              window.open("https://www.youtube.com/results?search_query="+data.data[i].trackName+" by "+data.data[i].artistName, '_blank');
+          });
+
 
           }
         } else {
@@ -173,8 +208,7 @@ function viewTracks() {
         tracksList.appendChild(item);
 
 
-        console.log(data.array);
-        console.log(data.array2);
+        
       }));
 
 }

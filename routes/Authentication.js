@@ -207,7 +207,7 @@ router.put('/playlist/track', verify, (req, res) => {
 
 
     // console.log(trackID);
-    db.all(`SELECT track_id, track_title, track_duration FROM tracks`, [], async (err, rows) => {
+    db.all(`SELECT * FROM tracks`, [], async (err, rows) => {
         if (err) {
             throw err;
         }
@@ -220,7 +220,7 @@ router.put('/playlist/track', verify, (req, res) => {
         }
 
         if (exist) {
-            db.run(`INSERT INTO playlistTracks(username, playlistName, trackID, trackName, playTime) VALUES(?,?,?,?,?)`, [username, playlistName, rows[index].track_id, rows[index].track_title, rows[index].track_duration], function (err) {
+            db.run(`INSERT INTO playlistTracks(username, playlistName, trackID, trackName, playTime, albumName, artistName) VALUES(?,?,?,?,?,?,?)`, [username, playlistName, rows[index].track_id, rows[index].track_title, rows[index].track_duration,rows[index].album_title,rows[index].artist_name], function (err) {
                 if (err) {
                     return res.json({ status: 300, success: false, error: err })
                 }
@@ -260,7 +260,7 @@ router.post('/playlist/track', verify, (req, res) => {
         }
 
         if (exist) {
-            res.json({ status: 200, array: trackID, array2: trackName });
+            res.json({ status: 200, data:rows, send: "Great Success My Friend!" });
         } else {
             return res.json({ status: 400, send: "Playlist or username not found" });
         }
