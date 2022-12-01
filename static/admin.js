@@ -65,7 +65,7 @@ window.onload = function() {
         .catch()}
   
   
-  };
+};
 
   document.getElementById("grantAdmin").addEventListener('click',grantPriviledge);
 
@@ -156,4 +156,177 @@ window.onload = function() {
           .catch()
         };
 
+
+
+//for dmca policy editing
+document.getElementById("writeDMCA").addEventListener('click',newDmca);
+
+function newDmca(){
+  const new_text = {
+
+    new_text: document.getElementById("dmcaContent").value
+  }
+
+  //Need to add HTML to tell user that playlist was added
+  fetch("/api/text/dmca", {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify(new_text)
+  })
+    .then(res => res.json()
+      .then(data => {
+        if (data.status != 400) {
+          console.log(data);
+
+        } else {
+          return;
+        }
+      }))
+
+    .catch()
+
+}
+
+
+//for loading the current dmca policy
+document.getElementById("loadDMCA").addEventListener('click',currentDmca);
+
+function currentDmca(){
   
+
+  //Need to add HTML to tell user that playlist was added
+  fetch("/api/text/dmca", {
+    method: 'GET'
+  })
+    .then(res => res.json()
+      .then(data => {
+        if (data.status != 400) {
+          console.log(data.text);
+          document.getElementById("dmcaContent").textContent = data.text;
+
+        } else {
+          return;
+        }
+      }))
+
+    .catch()
+
+}
+
+
+//for acceptable user policy
+document.getElementById("writeAUP").addEventListener('click',newAup);
+
+function newAup(){
+  const new_text = {
+
+    new_text: document.getElementById("aupContent").value
+  }
+
+  //Need to add HTML to tell user that playlist was added
+  fetch("/api/text/aup", {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify(new_text)
+  })
+    .then(res => res.json()
+      .then(data => {
+        if (data.status != 400) {
+          console.log(data);
+
+        } else {
+          return;
+        }
+      }))
+
+    .catch()
+
+}
+
+
+//for loading the current aup policy
+document.getElementById("loadAUP").addEventListener('click',currentAup);
+
+function currentAup(){
+  
+
+  //Need to add HTML to tell user that playlist was added
+  fetch("/api/text/aup", {
+    method: 'GET'
+  })
+    .then(res => res.json()
+      .then(data => {
+        if (data.status != 400) {
+          console.log(data.text);
+          document.getElementById("aupContent").textContent = data.text;
+
+        } else {
+          return;
+        }
+      }))
+
+    .catch()
+
+}
+  
+
+//for security and privacy policy
+document.getElementById("writePrivacy").addEventListener('click',newSp);
+
+function newSp(){
+  const new_text = {
+
+    new_text: document.getElementById("privacyContent").value
+  }
+
+  //Need to add HTML to tell user that playlist was added
+  fetch("/api/text/sp", {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify(new_text)
+  })
+    .then(res => res.json()
+      .then(data => {
+        if (data.status != 400) {
+          console.log(data);
+
+        } else {
+          return;
+        }
+      }))
+
+    .catch()
+
+}
+
+
+//for loading the current sp policy
+document.getElementById("loadSP").addEventListener('click',currentSp);
+
+function currentSp(){
+  
+
+  //Need to add HTML to tell user that playlist was added
+  fetch("/api/text/sp", {
+    method: 'GET'
+  })
+    .then(res => res.json()
+      .then(data => {
+        if (data.status != 400) {
+          console.log(data.text);
+          document.getElementById("privacyContent").textContent = data.text;
+
+        } else {
+          return;
+        }
+      }))
+
+    .catch()
+
+}

@@ -1,4 +1,5 @@
 const express = require("express");
+const fs = require('fs');
 const res = require("express/lib/response");
 const app = express();
 const sqlite = require("sqlite3").verbose();
@@ -417,32 +418,22 @@ router
     }
   });
 
-  
-  
-  //Created a create review put request, we prob need to move it to the authentication.js file and 
+  //for the text files
 
-//Routes for /api/tracks
+  //for dmca
 router
-  .route("/reviews") //all the routes to the tracks
+  .route("/text/dmca") //all the routes to the dmca
 
-  .put((req, res) => {
-    //we specify the playlist_name (playlist to be added to) and track_id (track to be added) in JSON body
+  //this is the get request that simply gets the text file contents
+  .get((req, res) => {
     try {
-      const { username, playlistName, reviewDate, rating, comments } = req.body;
-
-      sql = `INSERT INTO reviews ( username, playlistName, reviewDate, rating, comments) VALUES (?,?,?,?,?)`;
-      db.run(sql, [username,playlistName,reviewDate,rating,comments], (err) => {
-        if (err) return res.json({ status: 300, success: false, error: err });
-
-        console.log(
-          "successful input of review"
-        );
-        
-      });
+      
+      let fileString = fs.readFileSync("static\\dmca.txt").toString();
+      
       return res.json({
         status: 200,
         success: true,
-        
+        text: fileString
       });
     } catch (error) {
       return res.json({
@@ -451,6 +442,125 @@ router
       });
     }
   })
+  .put((req, res) => {
+    try {
+      const {
+        new_text
+      } = req.body;
+
+      //we update the text file with our new content; new_text
+      fs.writeFile('static\\dmca.txt', new_text, 'utf8', function (err) {
+        if (err) return console.log(err);
+     });
+
+      return res.json({
+        status: 200,
+        success: true,
+      });
+    } catch (error) {
+      return res.json({
+        status: 400,
+        success: false,
+      });
+    }
+  });
+  
+  //for acceptable user policy
+  router
+  .route("/text/aup") //all the routes to the dmca
+
+  //this is the get request that simply gets the text file contents
+  .get((req, res) => {
+    try {
+      
+      let fileString = fs.readFileSync("static\\aup.txt").toString();
+      
+      return res.json({
+        status: 200,
+        success: true,
+        text: fileString
+      });
+    } catch (error) {
+      return res.json({
+        status: 400,
+        success: false,
+      });
+    }
+  })
+  .put((req, res) => {
+    try {
+      const {
+        new_text
+      } = req.body;
+
+      //we update the text file with our new content; new_text
+      fs.writeFile('static\\aup.txt', new_text, 'utf8', function (err) {
+        if (err) return console.log(err);
+     });
+
+      return res.json({
+        status: 200,
+        success: true,
+      });
+    } catch (error) {
+      return res.json({
+        status: 400,
+        success: false,
+      });
+    }
+  });
+
+
+
+  //for sec and privacy
+  router
+  .route("/text/sp") //all the routes to the dmca
+
+  //this is the get request that simply gets the text file contents
+  .get((req, res) => {
+    try {
+      
+      let fileString = fs.readFileSync("static\\sp.txt").toString();
+      
+      return res.json({
+        status: 200,
+        success: true,
+        text: fileString
+      });
+    } catch (error) {
+      return res.json({
+        status: 400,
+        success: false,
+      });
+    }
+  })
+  .put((req, res) => {
+    try {
+      const {
+        new_text
+      } = req.body;
+
+      //we update the text file with our new content; new_text
+      fs.writeFile('static\\sp.txt', new_text, 'utf8', function (err) {
+        if (err) return console.log(err);
+     });
+
+      return res.json({
+        status: 200,
+        success: true,
+      });
+    } catch (error) {
+      return res.json({
+        status: 400,
+        success: false,
+      });
+    }
+  })
+
+
+
+
+
 
 
 
