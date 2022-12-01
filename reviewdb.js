@@ -26,6 +26,7 @@ function createTableReview(db) {
     db.exec(`
     CREATE TABLE IF NOT EXISTS reviews
     (
+    reviewId                 INTEGER PRIMARY KEY AUTOINCREMENT,
     username                 VARCHAR(20),
     playlistName             VARCHAR(20),
     playlistUsername         VARCHAR(20),

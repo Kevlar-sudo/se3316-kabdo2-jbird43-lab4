@@ -382,7 +382,7 @@ function getReviews(){
             //do something
             console.log(data.data[x].username+" ON "+data.data[x].reviewDate+" RATED "+data.data[x].rating);
             var revOption = document.createElement("option");
-            revOption.text = data.data[x].username+" ON "+data.data[x].reviewDate+" RATED "+data.data[x].rating;
+            revOption.text = data.data[x].reviewId;
             reviewList.add(revOption);
 
           }
@@ -395,3 +395,66 @@ function getReviews(){
 
     .catch()
 }
+
+//for hiding and showing reviews 
+
+    //for hiding reviews
+    document.getElementById("hideReview").addEventListener('click',hideRev);
+
+    function hideRev(){
+      const reviewId = {
+        reviewId: document.getElementById("reviewsL").value
+      }
+      console.log(reviewId);
+  
+      fetch("/api/auth/reviews/hide", {
+        method: 'PUT',
+        headers: { 'Content-type': 'application/json' },
+        body: JSON.stringify(reviewId),
+      })
+        .then(res => res.json()
+          .then(data => {
+            if (data.status != 400) {
+              console.log(data);
+              console.log("successfully hidden the review");
+              //do something
+    
+            } else {
+              return;
+            }
+          }))
+    
+        .catch()
+      };
+
+      
+      //for making reviews visible
+      document.getElementById("visibleReview").addEventListener('click',visibleRev);
+
+      function visibleRev(){
+        
+
+        const reviewId = {
+          reviewId: document.getElementById("reviewsL").value
+        }
+        console.log(reviewId);
+    
+        fetch("/api/auth/reviews/show", {
+          method: 'PUT',
+          headers: { 'Content-type': 'application/json' },
+          body: JSON.stringify(reviewId),
+        })
+          .then(res => res.json()
+            .then(data => {
+              if (data.status != 400) {
+                console.log(data);
+                console.log("successfully made the review visible");
+                //do something
+      
+              } else {
+                return;
+              }
+            }))
+      
+          .catch()
+        };

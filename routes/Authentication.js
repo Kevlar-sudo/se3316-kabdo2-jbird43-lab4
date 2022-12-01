@@ -581,7 +581,79 @@ router.get("/reviews/:playlistname", verify, (req, res) => {
         }
     });
 
+    //route for hiding a review
+    router.put('/reviews/hide', verify, async (req, res) => {
 
+        
+        const {
+            reviewId
+        } = req.body;
+    
+    
+                try {
+                    // set the deactivated column for the account to 0
+                    db.run(`UPDATE reviews SET hidden = 1 WHERE reviewId = '${reviewId}'`, [], function (err) {
+                        if (err) {
+                            return res.json({ status: 300, success: false, error: err })
+                        }
+                        // console log for confirmation
+                        console.log(`We have updated visibility of the review`);
+                        return res.json({ status: 200, success: true })
+                    });
+                } catch (err) {
+                    return res.json({ status: 400, send: err });
+                }
+    
+    });
+
+        //route for hiding a review
+    router.put('/reviews/hide', verify, async (req, res) => {
+
+        
+        const {
+            reviewId
+        } = req.body;
+    
+    
+                try {
+                    // set the deactivated column for the account to 0
+                    db.run(`UPDATE reviews SET hidden = 1 WHERE reviewId = '${reviewId}'`, [], function (err) {
+                        if (err) {
+                            return res.json({ status: 300, success: false, error: err })
+                        }
+                        // console log for confirmation
+                        console.log(`We have updated visibility of the review`);
+                        return res.json({ status: 200, success: true })
+                    });
+                } catch (err) {
+                    return res.json({ status: 400, send: err });
+                }
+    
+    });
+        //route for showing a review
+        router.put('/reviews/show', verify, async (req, res) => {
+
+        
+            const {
+                reviewId
+            } = req.body;
+        
+        
+                    try {
+                        // set the deactivated column for the account to 0
+                        db.run(`UPDATE reviews SET hidden = 0 WHERE reviewId = '${reviewId}'`, [], function (err) {
+                            if (err) {
+                                return res.json({ status: 300, success: false, error: err })
+                            }
+                            // console log for confirmation
+                            console.log(`We have updated visibility of the review`);
+                            return res.json({ status: 200, success: true })
+                        });
+                    } catch (err) {
+                        return res.json({ status: 400, send: err });
+                    }
+        
+        });
 
 
 
