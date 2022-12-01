@@ -68,7 +68,7 @@ router.get('/playlist/public', verify, (req, res) => {
         if (!found) {
             return res.json({ staus: 400, error: err });
         } else {
-            res.json({ status: 200, message: "found all playlists", username: username, playName: playlistName, noOfTracks: numberOfTracks, playT: playTime, des: description});
+            res.json({ status: 200, message: "found all playlists", username: username, playName: playlistName, noOfTracks: numberOfTracks, playT: playTime, des: description });
         }
     });
 
@@ -197,9 +197,6 @@ router.delete('/playlist', verify, (req, res) => {
 
 
 
-//Created a create review put request, we prob need to move it to the authentication.js file and 
-
-
 router.put('/playlist/track', verify, (req, res) => {
 
     const username = req.user._id;
@@ -210,7 +207,7 @@ router.put('/playlist/track', verify, (req, res) => {
 
 
     // console.log(trackID);
-    db.all(`SELECT track_id, track_title FROM tracks`, [], async (err, rows) => {
+    db.all(`SELECT track_id, track_title, track_duration FROM tracks`, [], async (err, rows) => {
         if (err) {
             throw err;
         }
@@ -223,7 +220,7 @@ router.put('/playlist/track', verify, (req, res) => {
         }
 
         if (exist) {
-            db.run(`INSERT INTO playlistTracks(username, playlistName, trackID, trackName) VALUES(?,?,?,?)`, [username, playlistName, rows[index].track_id, rows[index].track_title], function (err) {
+            db.run(`INSERT INTO playlistTracks(username, playlistName, trackID, trackName, playTime) VALUES(?,?,?,?,?)`, [username, playlistName, rows[index].track_id, rows[index].track_title, rows[index].track_duration], function (err) {
                 if (err) {
                     return res.json({ status: 300, success: false, error: err })
                 }
@@ -311,34 +308,50 @@ router.delete('/playlist/track', verify, (req, res) => {
 
 router.put("/reviews", verify, (req, res) => {
 
-    const user = req.header('Cookie');
+    const date = new Date();
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear()
+    const user = req.user._id;
+    const users = [];
+    const reviewDate = `${day}-${month}-${year}`;
+    const rating = req.body.rating;
+    const comments = req.body.comments;
+    const playlistName = req.body.playlistName;
+    let k = 0;
 
+    db.all(`SELECT * from playlists`, [], async (err, rows) => {
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].playlistName == playlistName) {
 
-    //we specify the playlist_name (playlist to be added to) and track_id (track to be added) in JSON body
-    try {
+                users[k] = rows[i].username;
+            }
+        }
 
-        const { username, playlistName, reviewDate, rating, comments } = req.body;
+        //we specify the playlist_name (playlist to be added to) and track_id (track to be added) in JSON body
+        try {
 
-        sql = `INSERT INTO reviews ( username, playlistName, reviewDate, rating, comments) VALUES (?,?,?,?,?)`;
-        db.run(sql, [username, playlistName, reviewDate, rating, comments], (err) => {
-            if (err) return res.json({ status: 300, success: false, error: err });
+            sql = `INSERT INTO reviews (username, playlistName, playlistUserName, reviewDate, rating, comments) VALUES (?,?,?,?,?,?)`;
+            db.run(sql, [user, playlistName, users, reviewDate, rating, comments], (err) => {
+                if (err) return res.json({ status: 300, success: false, error: err });
 
-            console.log(
-                "successful input of review"
-            );
+                console.log(
+                    "successful input of review"
+                );
 
-        });
-        return res.json({
-            status: 200,
-            success: true,
+            });
+            return res.json({
+                status: 200,
+                success: true,
 
-        });
-    } catch (error) {
-        return res.json({
-            status: 400,
-            success: false,
-        });
-    }
+            });
+        } catch (error) {
+            return res.json({
+                status: 400,
+                success: false,
+            });
+        }
+    });
 })
 
 router.get('/loggedin', verify, (req, res) => {

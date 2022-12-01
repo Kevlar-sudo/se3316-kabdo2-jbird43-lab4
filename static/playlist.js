@@ -8,7 +8,7 @@ const deleteList = document.getElementById("deleteList");
 addPlaylist.addEventListener('click', createPlaylist);
 //deleteList.addEventListener('click', deletePlaylist);
 
-document.getElementById("viewList").addEventListener('click', viewlist);
+document.getElementById("viewList").addEventListener('click', viewAllPublicPlaylists);
 document.getElementById("viewAllPlaylist").addEventListener('click', viewAllPlaylists);
 document.getElementById("addTrackToPlaylist").addEventListener('click', addTrackToPlaylist);
 document.getElementById("viewTracksInPlaylist").addEventListener('click', viewTracks);
@@ -63,10 +63,10 @@ function viewAllPlaylists() {
   var deleteTrackPlaylist = document.getElementById('deleteTrackPlaylist');
   var deletePlaylist = document.getElementById('deletePlaylist');
 
-emptyDOM(playsL);
-emptyDOM(viewPlaylist);
-emptyDOM(deleteTrackPlaylist);
-emptyDOM(deletePlaylist);
+  emptyDOM(playsL);
+  emptyDOM(viewPlaylist);
+  emptyDOM(deleteTrackPlaylist);
+  emptyDOM(deletePlaylist);
 
   fetch("/api/auth/playlist", {
     method: 'GET',
@@ -189,7 +189,7 @@ function deleteTrackFromPlaylist() {
 }
 
 //Front end for deleting a playlist
-function deletePlaylist(){
+function deletePlaylist() {
 
   const playlist = {
 
@@ -212,7 +212,29 @@ function deletePlaylist(){
 
 }
 
+function viewAllPublicPlaylists() {
 
+  var playsL = document.getElementById('playsL');
+
+  emptyDOM(playsL);
+
+  fetch("/api/auth/playlist/public", {
+    method: 'GET',
+
+  })
+    .then(res => res.json()
+      .then(data => {
+        console.log(data.array);
+
+        for (let i = 0; i < data.playName.length; i++) {
+          //add the new playlist to drop down list
+          var option = document.createElement("option");
+          option.text = data.playName[i];
+          playsL.add(option);
+        }
+
+      }));
+}
 
 
 
