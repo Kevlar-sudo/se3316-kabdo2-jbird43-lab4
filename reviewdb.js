@@ -11,7 +11,6 @@ function connectToDatabase() {
         console.log("connected to existing database");
         const db = new sqlite3.Database(filepath, (error) => {
 
-            deleteRock(db);
             deleteTableReview(db);
             createTableReview(db);
         });
@@ -29,6 +28,7 @@ function createTableReview(db) {
     (
     username                 VARCHAR(20),
     playlistName             VARCHAR(20),
+    playlistUsername         VARCHAR(20),
     reviewDate               VARCHAR(20),
     rating                   INT,
     comments                 VARCHAR(500),

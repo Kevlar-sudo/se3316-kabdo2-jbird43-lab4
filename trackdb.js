@@ -29,7 +29,8 @@ function createTableTracks(db) {
     username                 VARCHAR(20),
     playlistName             VARCHAR(20),
     trackID                  VARCHAR(20),
-    trackName                VARCHAR(500)
+    trackName                VARCHAR(500),
+    playTime                 VARCHAR(50)
     )
     `
     );
