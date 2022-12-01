@@ -6,13 +6,15 @@ const addPlaylist = document.getElementById("addPlaylist");
 const deleteList = document.getElementById("deleteList");
 
 addPlaylist.addEventListener('click', createPlaylist);
-deleteList.addEventListener('click', deletePlaylist)
+//deleteList.addEventListener('click', deletePlaylist);
 
-document.getElementById("viewList").addEventListener('click', viewlist);
+document.getElementById("viewList").addEventListener('click', viewAllPublicPlaylists);
 document.getElementById("viewAllPlaylist").addEventListener('click', viewAllPlaylists);
 document.getElementById("addTrackToPlaylist").addEventListener('click', addTrackToPlaylist);
 document.getElementById("viewTracksInPlaylist").addEventListener('click', viewTracks);
 document.getElementById("deleteTrack").addEventListener('click', deleteTrackFromPlaylist);
+document.getElementById("deletePlaylistBtn").addEventListener('click', deletePlaylist);
+document.getElementById("addReview").addEventListener('click', writeReview);
 
 var playListTracks = {};
 var durations = {};
@@ -59,7 +61,13 @@ function viewAllPlaylists() {
 
   var playsL = document.getElementById('playsLAll');
   var viewPlaylist = document.getElementById('allPlaylists');
-  var deletePlaylist = document.getElementById('deleteTrackPlaylist');
+  var deleteTrackPlaylist = document.getElementById('deleteTrackPlaylist');
+  var deletePlaylist = document.getElementById('deletePlaylist');
+
+  emptyDOM(playsL);
+  emptyDOM(viewPlaylist);
+  emptyDOM(deleteTrackPlaylist);
+  emptyDOM(deletePlaylist);
 
   fetch("/api/auth/playlist", {
     method: 'GET',
@@ -74,18 +82,21 @@ function viewAllPlaylists() {
           var option = document.createElement("option");
           var option2 = document.createElement("option");
           var option3 = document.createElement("option");
+          var option4 = document.createElement("option");
           option.text = data.array[i];
           option2.text = data.array[i];
           option3.text = data.array[i];
+          option4.text = data.array[i];
           playsL.add(option);
           viewPlaylist.add(option2);
-          deletePlaylist.add(option3);
+          deleteTrackPlaylist.add(option3);
+          deletePlaylist.add(option4);
         }
       }));
 
 }
 
-//Function to add ttracks to a playlist
+//Function to add tracks to a playlist
 function addTrackToPlaylist() {
   const track = {
 
@@ -176,13 +187,100 @@ function deleteTrackFromPlaylist() {
       .then(data => {
         console.log(data);
       }));
+}
+
+//Front end for deleting a playlist
+function deletePlaylist() {
+
+  const playlist = {
+
+    playlistName: document.getElementById("deletePlaylist").value,
+  }
 
 
+  fetch("/api/auth/playlist", {
+    method: 'DELETE',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify(playlist)
 
+  })
+    .then(res => res.json()
+      .then(data => {
+        console.log(data);
+      }));
 
 }
 
+function viewAllPublicPlaylists() {
 
+  var playsL = document.getElementById('playsL');
+
+  emptyDOM(playsL);
+
+  fetch("/api/auth/playlist/public", {
+    method: 'GET',
+
+  })
+    .then(res => res.json()
+      .then(data => {
+        console.log(data.array);
+
+        for (let i = 0; i < data.playName.length; i++) {
+          //add the new playlist to drop down list
+          var option = document.createElement("option");
+          option.text = data.playName[i];
+          playsL.add(option);
+        }
+
+      }));
+}
+
+
+function writeReview() {
+
+  var playL = document.getElementById('playsL').value;
+  var rating = 0;
+  var comment = document.getElementById("review").value;
+
+  if (document.getElementById("star5").checked == true) {
+    rating = 5;
+  } else if (document.getElementById("star4").checked == true) {
+    rating = 4;
+  } else if (document.getElementById("star3").checked == true) {
+    rating = 3;
+  } else if (document.getElementById("star2").checked == true) {
+    rating = 2;
+  } else if (document.getElementById("star1").checked == true) {
+    rating = 1;
+  } else {
+    rating = 0;
+  }
+
+  const review = {
+    playlistName: playL,
+    rating: rating,
+    comments: comment
+  }
+
+  fetch("/api/auth/reviews", {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify(review)
+  })
+    .then(res => res.json()
+      .then(data => {
+
+        console.log(data);
+
+      }))
+
+    .catch()
+
+};
 
 
 
@@ -292,7 +390,7 @@ function deleteTrackFromPlaylist() {
 
 
 //delete playlist
-function deletePlaylist() {
+function deletePlaylistOld() {
   var playListValue = document.getElementById('playsL').value;
   const removeList = {
     playlist_name: document.getElementById("playsL").value

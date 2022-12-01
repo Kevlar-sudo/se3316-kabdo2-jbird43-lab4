@@ -37,6 +37,44 @@ router.get('/playlist', verify, (req, res) => {
 
 })
 
+//Get all playlists created by a user
+router.get('/playlist/public', verify, (req, res) => {
+
+    console.log(req.user._id);
+    let username = [];
+    let playlistName = [];
+    let numberOfTracks = [];
+    let playTime = [];
+    let description = [];
+    let found = false;
+    let k = 0;
+
+    db.all(`SELECT * FROM playlists`, [], async (err, rows) => {
+        if (err) {
+            throw err;
+        }
+        //Add all publci playlist details
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].public == '1') {
+                username[k] = rows[i].username
+                playlistName[k] = rows[i].playlistName;
+                numberOfTracks[k] = rows[i].numberOfTracks;
+                playTime[k] = rows[i].playTime;
+                description[k] = rows[i].description;
+                found = true;
+                k++;
+            }
+        }
+        if (!found) {
+            return res.json({ staus: 400, error: err });
+        } else {
+            res.json({ status: 200, message: "found all playlists", username: username, playName: playlistName, noOfTracks: numberOfTracks, playT: playTime, des: description });
+        }
+    });
+
+
+})
+
 
 //Add a playlist to the playlist db
 router.put('/playlist', verify, (req, res) => {
@@ -46,8 +84,10 @@ router.put('/playlist', verify, (req, res) => {
 
     const username = user;
     const playlistName = req.body.playlistName;
-    const numberOfTracks = 0;
-    const playTime = 0;
+    const public = req.body.public;
+    const description = req.body.description;
+    let numberOfTracks = 0;
+    let playTime = 0;
     let exist = false;
     let playlistExists = false;
 
@@ -87,7 +127,7 @@ router.put('/playlist', verify, (req, res) => {
                 if (playlistExists == false) {
                     try {
                         // insert one row into the langs table
-                        db.run(`INSERT INTO playlists(username, playlistName, numberOfTracks, playTime) VALUES(?,?,?,?)`, [username, playlistName, numberOfTracks, playTime], function (err) {
+                        db.run(`INSERT INTO playlists(username, playlistName, numberOfTracks, playTime, public, description) VALUES(?,?,?,?,?,?)`, [username, playlistName, numberOfTracks, playTime, public, description], function (err) {
                             if (err) {
                                 return res.json({ status: 300, success: false, error: err })
                             } else {
@@ -114,15 +154,47 @@ router.put('/playlist', verify, (req, res) => {
 
 router.delete('/playlist', verify, (req, res) => {
 
-    const username = req.user._id;
-    const playlistName = req.body.playlistName;
+    let username = req.user._id;
+    console.log(username);
+    let playlistName = req.body.playlistName;
+    console.log(playlistName);
+    let index = 0;
+    let exist = false;
+    let deleted = false;
+
+    db.all(`SELECT username, playlistName FROM playlists`, [], async (err, rows) => {
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].username == username && rows[i].playlistName == playlistName) {
+                exist = true;
+                index = i;
+            }
+        }
+        if (exist) {
+            //Delete tracks in playlist
+            db.run(`DELETE FROM playlistTracks WHERE username=? AND playlistName=?`, username, playlistName, (err) => {
+                if (err) return res.json({ status: 300, success: false, error: err });
+
+                res.json({ status: 200, success: true });
+                console.log("successful delete");
+
+            });
+
+            db.run(`DELETE FROM playlists WHERE username=? AND playlistName=?`, username, playlistName, (err) => {
+                if (err) return res.json({ status: 300, success: false, error: err });
+                console.log("successful delete");
+            });
+
+
+        } else {
+            return res.json({ status: 400, message: "TRACK WITH THAT PLAYIST DOES NOT EXIST" });
+        }
+    });
 
 
 
 
 });
 
-//Created a create review put request, we prob need to move it to the authentication.js file and 
 
 
 router.put('/playlist/track', verify, (req, res) => {
@@ -135,7 +207,7 @@ router.put('/playlist/track', verify, (req, res) => {
 
 
     // console.log(trackID);
-    db.all(`SELECT track_id, track_title FROM tracks`, [], async (err, rows) => {
+    db.all(`SELECT track_id, track_title, track_duration FROM tracks`, [], async (err, rows) => {
         if (err) {
             throw err;
         }
@@ -148,7 +220,7 @@ router.put('/playlist/track', verify, (req, res) => {
         }
 
         if (exist) {
-            db.run(`INSERT INTO playlistTracks(username, playlistName, trackID, trackName) VALUES(?,?,?,?)`, [username, playlistName, rows[index].track_id, rows[index].track_title], function (err) {
+            db.run(`INSERT INTO playlistTracks(username, playlistName, trackID, trackName, playTime) VALUES(?,?,?,?,?)`, [username, playlistName, rows[index].track_id, rows[index].track_title, rows[index].track_duration], function (err) {
                 if (err) {
                     return res.json({ status: 300, success: false, error: err })
                 }
@@ -212,21 +284,21 @@ router.delete('/playlist/track', verify, (req, res) => {
         for (let i = 0; i < rows.length; i++) {
             if (rows[i].username == username && rows[i].playlistName == playlistName && rows[i].trackID == trackID) {
                 exist = true;
-                index=i;
+                index = i;
             }
         }
-    if (exist) {
-        db.run(`DELETE FROM playlistTracks WHERE username=? AND trackID=? AND playlistName=?`, username, trackID, playlistName, (err) => {
-            if (err) return res.json({ status: 300, success: false, error: err });
+        if (exist) {
+            db.run(`DELETE FROM playlistTracks WHERE username=? AND trackID=? AND playlistName=?`, username, trackID, playlistName, (err) => {
+                if (err) return res.json({ status: 300, success: false, error: err });
 
 
-            res.json({ status: 200, success: true });
-            console.log("successful delete");
-        });
-    }else{
-        return  res.json({ status: 400, message: "TRACK WITH THAT PLAYIST DOES NOT EXIST"});
-    }
-});
+                res.json({ status: 200, success: true });
+                console.log("successful delete");
+            });
+        } else {
+            return res.json({ status: 400, message: "TRACK WITH THAT PLAYIST DOES NOT EXIST" });
+        }
+    });
 
 
 
@@ -236,34 +308,50 @@ router.delete('/playlist/track', verify, (req, res) => {
 
 router.put("/reviews", verify, (req, res) => {
 
-    const user = req.header('Cookie');
+    const date = new Date();
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear()
+    const user = req.user._id;
+    const users = [];
+    const reviewDate = `${day}-${month}-${year}`;
+    const rating = req.body.rating;
+    const comments = req.body.comments;
+    const playlistName = req.body.playlistName;
+    let k = 0;
 
+    db.all(`SELECT * from playlists`, [], async (err, rows) => {
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].playlistName == playlistName) {
 
-    //we specify the playlist_name (playlist to be added to) and track_id (track to be added) in JSON body
-    try {
+                users[k] = rows[i].username;
+            }
+        }
 
-        const { username, playlistName, reviewDate, rating, comments } = req.body;
+        //we specify the playlist_name (playlist to be added to) and track_id (track to be added) in JSON body
+        try {
 
-        sql = `INSERT INTO reviews ( username, playlistName, reviewDate, rating, comments) VALUES (?,?,?,?,?)`;
-        db.run(sql, [username, playlistName, reviewDate, rating, comments], (err) => {
-            if (err) return res.json({ status: 300, success: false, error: err });
+            sql = `INSERT INTO reviews (username, playlistName, playlistUserName, reviewDate, rating, comments) VALUES (?,?,?,?,?,?)`;
+            db.run(sql, [user, playlistName, users, reviewDate, rating, comments], (err) => {
+                if (err) return res.json({ status: 300, success: false, error: err });
 
-            console.log(
-                "successful input of review"
-            );
+                console.log(
+                    "successful input of review"
+                );
 
-        });
-        return res.json({
-            status: 200,
-            success: true,
+            });
+            return res.json({
+                status: 200,
+                success: true,
 
-        });
-    } catch (error) {
-        return res.json({
-            status: 400,
-            success: false,
-        });
-    }
+            });
+        } catch (error) {
+            return res.json({
+                status: 400,
+                success: false,
+            });
+        }
+    });
 })
 
 router.get('/loggedin', verify, (req, res) => {
