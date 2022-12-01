@@ -74,13 +74,13 @@ router.post('/login', async (req, res) => {
 
         }
 
-        console.log("deactivation status is: "+rows[index].deactivated);
+        console.log("deactivation status is: " + rows[index].deactivated);
 
-        if(rows[index].deactivated == 2){
+        if (rows[index].deactivated == 2) {
             return res.json({ status: 500, send: "This account has been deactivated" });
         }
 
-        if(rows[index].deactivated == 1){
+        if (rows[index].deactivated == 1) {
             return res.json({ status: 501, send: "This account hasn't verifies their email" });
         }
 
@@ -108,61 +108,106 @@ router.post('/login', async (req, res) => {
 
 });
 
+router.put('/change/password', async (req, res) => {
+
+    const user = req.body._id;
+    const email = req.body.email;
+    const password = req.body.password;
+    let exists = true;
+
+    //Checking if email exists
+    db.all(`SELECT * FROM users`, [], async (err, rows) => {
+        if (err) {
+            throw err;
+        }
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].username == user && rows[i].email == email) { //If the the loged in user does match the email
+                console.log("Email exists");
+                exists = true;
+                index = i;
+            }
+        }
+
+        if (exists) {
+
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(password, salt);
+
+            try {
+                db.run(`UPDATE users SET password=? WHERE email=?`, hashedPassword, email, (err) => {
+                    if (err) return res.json({ status: 300, success: false, error: err });
+
+                    res.json({ status: 200, message: "password updated" });
+                });
+
+            } catch {
+                res.json({ status: 400, message: "Cannot update password" });
+            }
+        } else {
+            return res.json({ status: 400, message: "You are not logged in as the correct user" });
+        }
+
+
+    });
+
+
+});
+
 
 //confirmation code upon registration
 router.put('/confirm', async (req, res) => {
 
     let exists = false;
     let index = 0;
-    
+
     const email = req.body.email;
-    
-    
-    
-   //Checking if email exists
-   db.all(`SELECT email FROM users`, [], async (err, rows) => {
-    if (err) {
-        throw err;
-    }
-    for (let i = 0; i < rows.length; i++) {
-        if (rows[i].email == email) {
-            console.log("Email exists");
-            exists = true;
-            index = i;
+
+
+
+    //Checking if email exists
+    db.all(`SELECT email FROM users`, [], async (err, rows) => {
+        if (err) {
+            throw err;
+        }
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].email == email) {
+                console.log("Email exists");
+                exists = true;
+                index = i;
+            }
+
         }
 
-    }
+        const userDetails = {
+            username: rows[index].username,
+            email: rows[index].email,
+            password: rows[index].password,
+            administrator: rows[index].administrator,
+            deactivated: rows[index].deactivated
 
-    const userDetails = {
-        username: rows[index].username,
-        email: rows[index].email,
-        password: rows[index].password,
-        administrator: rows[index].administrator,
-        deactivated: rows[index].deactivated
+        };
 
-    };
+        if (exists == false) {
+            console.log("email does not exist");
+            return res.json({ status: 400, send: "Email does not exist" });
+        } else {
+            try {
+                console.log(`UPDATE users SET deactivted = 0 WHERE email = ${rows[index].email}`);
+                // set the deactivated column for the account to 0
+                db.run(`UPDATE users SET deactivated = 0 WHERE email = '${rows[index].email}'`, [], function (err) {
+                    if (err) {
+                        return res.json({ status: 300, success: false, error: err })
+                    }
+                    // console log for confirmation
+                    console.log(`We have updated activation status`);
+                    return res.json({ status: 200, success: true })
+                });
+            } catch (err) {
+                return res.json({ status: 400, send: err });
+            }
 
-    if (exists == false) {
-        console.log("email does not exist");
-        return res.json({ status: 400, send: "Email does not exist" });
-    } else {
-        try {
-            console.log(`UPDATE users SET deactivted = 0 WHERE email = ${rows[index].email}`);
-            // set the deactivated column for the account to 0
-            db.run(`UPDATE users SET deactivated = 0 WHERE email = '${rows[index].email}'`, [], function (err) {
-                if (err) {
-                    return res.json({ status: 300, success: false, error: err })
-                }
-                // console log for confirmation
-                console.log(`We have updated activation status`);
-                return res.json({ status: 200, success: true })
-            });
-        } catch (err) {
-            return res.json({ status: 400, send: err });
         }
-        
-    }
-});
+    });
 
 
 });
