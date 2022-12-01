@@ -61,7 +61,7 @@ router.post('/login', async (req, res) => {
 
 
     //Checking if email exists
-    db.all(`SELECT username, email, password, administrator, deactivated FROM users`, [], async (err, rows) => {
+    db.all(`SELECT * FROM users`, [], async (err, rows) => {
         if (err) {
             throw err;
         }
@@ -73,15 +73,6 @@ router.post('/login', async (req, res) => {
             }
 
         }
-
-        const userDetails = {
-            username: rows[index].username,
-            email: rows[index].email,
-            password: rows[index].password,
-            administrator: rows[index].administrator,
-            deactivated: rows[index].deactivated
-
-        };
 
         console.log("deactivation status is: "+rows[index].deactivated);
 

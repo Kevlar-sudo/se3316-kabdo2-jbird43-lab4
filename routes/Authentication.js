@@ -37,6 +37,44 @@ router.get('/playlist', verify, (req, res) => {
 
 })
 
+//Get all playlists created by a user
+router.get('/playlist/public', verify, (req, res) => {
+
+    console.log(req.user._id);
+    let username = [];
+    let playlistName = [];
+    let numberOfTracks = [];
+    let playTime = [];
+    let description = [];
+    let found = false;
+    let k = 0;
+
+    db.all(`SELECT * FROM playlists`, [], async (err, rows) => {
+        if (err) {
+            throw err;
+        }
+        //Add all publci playlist details
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].public == '1') {
+                username[k] = rows[i].username
+                playlistName[k] = rows[i].playlistName;
+                numberOfTracks[k] = rows[i].numberOfTracks;
+                playTime[k] = rows[i].playTime;
+                description[k] = rows[i].description;
+                found = true;
+                k++;
+            }
+        }
+        if (!found) {
+            return res.json({ staus: 400, error: err });
+        } else {
+            res.json({ status: 200, message: "found all playlists", username: username, playName: playlistName, noOfTracks: numberOfTracks, playT: playTime, des: description});
+        }
+    });
+
+
+})
+
 
 //Add a playlist to the playlist db
 router.put('/playlist', verify, (req, res) => {
@@ -46,8 +84,10 @@ router.put('/playlist', verify, (req, res) => {
 
     const username = user;
     const playlistName = req.body.playlistName;
-    const numberOfTracks = 0;
-    const playTime = 0;
+    const public = req.body.public;
+    const description = req.body.description;
+    let numberOfTracks = 0;
+    let playTime = 0;
     let exist = false;
     let playlistExists = false;
 
@@ -87,7 +127,7 @@ router.put('/playlist', verify, (req, res) => {
                 if (playlistExists == false) {
                     try {
                         // insert one row into the langs table
-                        db.run(`INSERT INTO playlists(username, playlistName, numberOfTracks, playTime) VALUES(?,?,?,?)`, [username, playlistName, numberOfTracks, playTime], function (err) {
+                        db.run(`INSERT INTO playlists(username, playlistName, numberOfTracks, playTime, public, description) VALUES(?,?,?,?,?,?)`, [username, playlistName, numberOfTracks, playTime, public, description], function (err) {
                             if (err) {
                                 return res.json({ status: 300, success: false, error: err })
                             } else {

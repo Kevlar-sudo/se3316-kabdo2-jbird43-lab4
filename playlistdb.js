@@ -32,7 +32,9 @@ function createTablePlaylist(db) {
     username                 VARCHAR(20),
     playlistName             VARCHAR(20),
     numberOfTracks           VARCHAR(20),
-    playTime                 VARCHAR(20)
+    playTime                 VARCHAR(20),
+    public                   VARCHAR(1),
+    description              VARCHAR(1000)
     )
     `
     );
