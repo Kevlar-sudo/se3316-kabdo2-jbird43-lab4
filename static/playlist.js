@@ -14,6 +14,7 @@ document.getElementById("addTrackToPlaylist").addEventListener('click', addTrack
 document.getElementById("viewTracksInPlaylist").addEventListener('click', viewTracks);
 document.getElementById("deleteTrack").addEventListener('click', deleteTrackFromPlaylist);
 document.getElementById("deletePlaylistBtn").addEventListener('click', deletePlaylist);
+document.getElementById("addReview").addEventListener('click', writeReview);
 
 var playListTracks = {};
 var durations = {};
@@ -235,6 +236,51 @@ function viewAllPublicPlaylists() {
 
       }));
 }
+
+
+function writeReview() {
+
+  var playL = document.getElementById('playsL').value;
+  var rating = 0;
+  var comment = document.getElementById("review").value;
+
+  if (document.getElementById("star5").checked == true) {
+    rating = 5;
+  } else if (document.getElementById("star4").checked == true) {
+    rating = 4;
+  } else if (document.getElementById("star3").checked == true) {
+    rating = 3;
+  } else if (document.getElementById("star2").checked == true) {
+    rating = 2;
+  } else if (document.getElementById("star1").checked == true) {
+    rating = 1;
+  } else {
+    rating = 0;
+  }
+
+  const review = {
+    playlistName: playL,
+    rating: rating,
+    comments: comment
+  }
+
+  fetch("/api/auth/reviews", {
+    method: 'PUT',
+    headers: {
+      'Content-type': 'application/json'
+    },
+    body: JSON.stringify(review)
+  })
+    .then(res => res.json()
+      .then(data => {
+
+        console.log(data);
+
+      }))
+
+    .catch()
+
+};
 
 
 
