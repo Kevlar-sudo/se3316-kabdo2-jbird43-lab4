@@ -569,6 +569,7 @@ router.route("/playlists/public/list")
     let numberOfTracks = [];
     let playTime = [];
     let description = [];
+    let lastModified = [];
     let found = false;
     let k = 0;
 
@@ -589,11 +590,11 @@ router.route("/playlists/public/list")
     let comments = [];
     let m = 0;
 
-    db.all(`SELECT * FROM playlists`, [], async (err, rows) => {
+    db.all(`SELECT * FROM playlists ORDER By lastModified`, [], async (err, rows) => {
       if (err) {
         throw err;
       }
-      //Add all publci playlist details
+      //Add all public playlist details
       for (let i = 0; i < rows.length; i++) {
         if (rows[i].public == '1') {
           username[k] = rows[i].username
@@ -601,6 +602,7 @@ router.route("/playlists/public/list")
           numberOfTracks[k] = rows[i].numberOfTracks;
           playTime[k] = rows[i].playTime;
           description[k] = rows[i].description;
+          lastModified[k] = rows[i].lastModified
           found = true;
           k++;
         }
@@ -651,7 +653,7 @@ router.route("/playlists/public/list")
       if (!found) {
         return res.json({ staus: 400, error: "Error" });
       } else {
-        res.json({ status: 200, message: "found all playlists", username: username, playName: playlistName, noOfTracks: numberOfTracks, playT: playTime, des: description, trackID: trackID, trackName: trackName, trackPlayTime: trackPlayTime, albumName: albumName, artistName: artistName, userMadeReview: userWhoMadeReview, playlistOwner: playlistOwner, reviewPlaylist: reviewPlaylist, reviewDate: reviewDate, rating: rating, comments: comments });
+        res.json({ status: 200, message: "found all playlists", username: username, playName: playlistName, lastModified: lastModified, noOfTracks: numberOfTracks, playT: playTime, des: description, trackID: trackID, trackName: trackName, trackPlayTime: trackPlayTime, albumName: albumName, artistName: artistName, userMadeReview: userWhoMadeReview, playlistOwner: playlistOwner, reviewPlaylist: reviewPlaylist, reviewDate: reviewDate, rating: rating, comments: comments });
       }
 
     });

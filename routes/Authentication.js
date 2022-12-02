@@ -3,6 +3,7 @@ const verify = require('./VerifyToken');
 const sqlite3 = require("sqlite3").verbose();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { create } = require('domain');
 let db = new sqlite3.Database('./music.db');
 
 //Get all playlists created by a user
@@ -81,7 +82,11 @@ router.put('/playlist', verify, (req, res) => {
 
     //Get the loged in username
     const user = req.user._id;
-
+    const date = new Date();
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear()
+    const createDate = `${day}-${month}-${year}`;
     const username = user;
     const playlistName = req.body.playlistName;
     const public = req.body.public;
@@ -127,7 +132,7 @@ router.put('/playlist', verify, (req, res) => {
                 if (playlistExists == false) {
                     try {
                         // insert one row into the langs table
-                        db.run(`INSERT INTO playlists(username, playlistName, numberOfTracks, playTime, public, description) VALUES(?,?,?,?,?,?)`, [username, playlistName, numberOfTracks, playTime, public, description], function (err) {
+                        db.run(`INSERT INTO playlists(username, playlistName, numberOfTracks, playTime, public, description, lastModified) VALUES(?,?,?,?,?,?,?)`, [username, playlistName, numberOfTracks, playTime, public, description, createDate], function (err) {
                             if (err) {
                                 return res.json({ status: 300, success: false, error: err })
                             } else {
@@ -208,6 +213,11 @@ router.delete('/playlist', verify, (req, res) => {
 router.put('/playlist/track', verify, (req, res) => {
 
     const username = req.user._id;
+    const date = new Date();
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear()
+    const createDate = `${day}-${month}-${year}`;
     const trackID = req.body.trackID;
     const playlistName = req.body.playlistName;
     let index = 0;
@@ -280,12 +290,16 @@ router.put('/playlist/track', verify, (req, res) => {
                     }
                 }
 
-                db.run('UPDATE playlists SET numberOfTracks = ? WHERE userName = ? AND playlistName = ?', trackCount.toString(), username, playlistName, (err) => {
+                db.run('UPDATE playlists SET numberOfTracks = ? WHERE username = ? AND playlistName = ?', trackCount.toString(), username, playlistName, (err) => {
                     if (err) return res.json({ status: 300, success: false, error: err });
 
                 });
 
                 db.run("UPDATE playlists SET playTime = ? WHERE username = ? AND playlistName = ?", totalPlayTime.toString(), username, playlistName, (err) => {
+                    if (err) return res.json({ status: 300, success: false, error: err });
+                });
+
+                db.run("UPDATE playlists SET lastModified = ? WHERE username = ? AND playlistName = ?", createDate, username, playlistName, (err) => {
                     if (err) return res.json({ status: 300, success: false, error: err });
                 });
             });

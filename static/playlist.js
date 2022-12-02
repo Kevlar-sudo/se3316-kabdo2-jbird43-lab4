@@ -191,8 +191,6 @@ function viewTracks() {
 
         content.appendChild(paragraph);
         
-
-
         //finally append the collapsible box into our resultant div
         item.appendChild(content);
         item.appendChild(document.createElement("br"));
