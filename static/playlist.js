@@ -248,13 +248,6 @@ function viewTracks() {
               window.open("https://www.youtube.com/results?search_query="+data.data[i].trackName+" by "+data.data[i].artistName, '_blank');
           });
 
-
-
-
-
-          
-
-
           }
         } else {
           item.appendChild(document.createTextNode("There are no tracks in this playlist"));

@@ -151,7 +151,7 @@ router.put('/playlist', verify, (req, res) => {
 
 });
 
-
+//Delete a playlist
 router.delete('/playlist', verify, (req, res) => {
 
     let username = req.user._id;
@@ -196,7 +196,7 @@ router.delete('/playlist', verify, (req, res) => {
 });
 
 
-
+//Insert track into playlist
 router.put('/playlist/track', verify, (req, res) => {
 
     const username = req.user._id;

@@ -12,6 +12,7 @@ let sql;
 app.use(express.json());
 //for password encryption
 const bcrypt = require("bcrypt");
+const { brotliDecompress } = require("zlib");
 //how many rounds of salt
 const saltRounds = 10;
 
@@ -557,6 +558,8 @@ router
     }
   })
 
+
+//Get all public playlist data
 router.route("/playlists/public/list")
 
   .get((req, res) => {
@@ -577,6 +580,10 @@ router.route("/playlists/public/list")
     let l = 0;
 
     let userWhoMadeReview = [];
+    let playlistOwner = [];
+    let playlistOwner2 = [];
+    let reviewPlaylist = [];
+    let reviewPlaylist2 = [];
     let reviewDate = [];
     let rating = [];
     let comments = [];
@@ -600,6 +607,7 @@ router.route("/playlists/public/list")
       }
     });
 
+    //Select all track data for public playlists
     db.all('SELECT * FROM playlistTracks', [], async (err, rows) => {
       if (err) {
         throw err;
@@ -621,12 +629,17 @@ router.route("/playlists/public/list")
 
     });
 
+    //Select all public playlist data from reviews db
     db.all('SELECT * FROM reviews', [], async (err, rows) => {
 
       for (let i = 0; i < rows.length; i++) {
         for (let j = 0; j < playlistName.length; j++) {
           if (rows[i].playlistName == playlistName[j] && rows[i].playlistUsername == username[j]) {
             userWhoMadeReview[m] = rows[i].username;
+            playlistOwner[m] = rows[i].playlistUsername;
+            playlistOwner2[m] = rows[i].playlistUsername;
+            reviewPlaylist[m] = rows[i].playlistName;
+            reviewPlaylist2[m] = rows[i].playlistName;
             reviewDate[m] = rows[i].reviewDate;
             rating[m] = rows[i].rating;
             comments[m] = rows[i].comments;
@@ -638,12 +651,50 @@ router.route("/playlists/public/list")
       if (!found) {
         return res.json({ staus: 400, error: "Error" });
       } else {
-        res.json({ status: 200, message: "found all playlists", username: username, playName: playlistName, noOfTracks: numberOfTracks, playT: playTime, des: description, trackID: trackID, trackName: trackName, trackPlayTime: trackPlayTime, albumName: albumName, artistName: artistName, userMadeReview: userWhoMadeReview, reviewDate: reviewDate, rating: rating, comments: comments });
+        res.json({ status: 200, message: "found all playlists", username: username, playName: playlistName, noOfTracks: numberOfTracks, playT: playTime, des: description, trackID: trackID, trackName: trackName, trackPlayTime: trackPlayTime, albumName: albumName, artistName: artistName, userMadeReview: userWhoMadeReview, playlistOwner: playlistOwner, reviewPlaylist: reviewPlaylist, reviewDate: reviewDate, rating: rating, comments: comments });
       }
 
     });
 
-  });
+  })
+
+  .post((req, res) => {
+
+    let playlistName = req.body.playlistName;
+    let playlistCreater = req.body.playlistCreater;
+    let ratings = [];
+    let avgRating = 0;
+    let k = 0;
+
+
+
+    db.all(`SELECT * FROM reviews`, [], (err, rows) => {
+
+      for (let i = 0; i < rows.length; i++) {
+        if (rows[i].playlistUsername == playlistCreater && rows[i].playlistName == playlistName) {
+
+          ratings[k] = rows[i].rating;
+          k++;
+        }
+      }
+
+      for(let i = 0; i<ratings.length; i++){
+        avgRating += ratings[i];
+      }
+
+      let decimalRating = Math.ceil((avgRating/2).toFixed());
+
+
+      res.json({ratings: decimalRating });
+    });
+
+
+
+  })
+
+
+
+
 
 
 
