@@ -689,6 +689,41 @@ router.put('/reviews/show', verify, async (req, res) => {
 
 });
 
+//the backend for inserting claims
+router.post('/claim', verify, async (req, res) => {
+
+    const date = new Date();
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear()
+
+    const type = req.body.type;
+    const claimDate = `${day}-${month}-${year}`;
+    const playlistName = req.body.playlistName;
+    const reviewId = req.body.reviewId;
+    
+    
+      
+    try {
+         // inserting the claim into our db
+         db.run(`INSERT INTO claims(type, date, playlistName, reviewId) VALUES(?,?,?,?)`, [type, claimDate, playlistName, reviewId], function (err) {
+            if (err) {
+                return res.json({ status: 300, success: false, error: err })
+            }
+            // console log for confirmation
+            console.log(`We have inserted the claim into our databayyyyyse`);
+            return res.json({ status: 200, success: true })
+            });
+            } catch (err) {
+                return res.json({ status: 400, send: err });
+            }
+
+});
+
+
+
+    
+
 
 
 
