@@ -299,7 +299,7 @@ router
       playlist_name == "genres" ||
       playlist_name == "artists" ||
       playlist_name == "tracks" ||
-      playlist_name == "users"  ||
+      playlist_name == "users" ||
       playlist_name == "reviews"
     ) {
       console.log("500 This database is protected and can't be deleted");
@@ -418,18 +418,18 @@ router
     }
   });
 
-  //for the text files
+//for the text files
 
-  //for dmca
+//for dmca
 router
   .route("/text/dmca") //all the routes to the dmca
 
   //this is the get request that simply gets the text file contents
   .get((req, res) => {
     try {
-      
+
       let fileString = fs.readFileSync("static\\dmca.txt").toString();
-      
+
       return res.json({
         status: 200,
         success: true,
@@ -451,7 +451,7 @@ router
       //we update the text file with our new content; new_text
       fs.writeFile('static\\dmca.txt', new_text, 'utf8', function (err) {
         if (err) return console.log(err);
-     });
+      });
 
       return res.json({
         status: 200,
@@ -464,17 +464,17 @@ router
       });
     }
   });
-  
-  //for acceptable user policy
-  router
+
+//for acceptable user policy
+router
   .route("/text/aup") //all the routes to the dmca
 
   //this is the get request that simply gets the text file contents
   .get((req, res) => {
     try {
-      
+
       let fileString = fs.readFileSync("static\\aup.txt").toString();
-      
+
       return res.json({
         status: 200,
         success: true,
@@ -496,7 +496,7 @@ router
       //we update the text file with our new content; new_text
       fs.writeFile('static\\aup.txt', new_text, 'utf8', function (err) {
         if (err) return console.log(err);
-     });
+      });
 
       return res.json({
         status: 200,
@@ -512,16 +512,16 @@ router
 
 
 
-  //for sec and privacy
-  router
+//for sec and privacy
+router
   .route("/text/sp") //all the routes to the dmca
 
   //this is the get request that simply gets the text file contents
   .get((req, res) => {
     try {
-      
+
       let fileString = fs.readFileSync("static\\sp.txt").toString();
-      
+
       return res.json({
         status: 200,
         success: true,
@@ -543,7 +543,7 @@ router
       //we update the text file with our new content; new_text
       fs.writeFile('static\\sp.txt', new_text, 'utf8', function (err) {
         if (err) return console.log(err);
-     });
+      });
 
       return res.json({
         status: 200,
@@ -557,7 +557,93 @@ router
     }
   })
 
+router.route("/playlists/public/list")
 
+  .get((req, res) => {
+
+    let username = [];
+    let playlistName = [];
+    let numberOfTracks = [];
+    let playTime = [];
+    let description = [];
+    let found = false;
+    let k = 0;
+
+    let trackID = [];
+    let trackName = [];
+    let trackPlayTime = [];
+    let albumName = [];
+    let artistName = [];
+    let l = 0;
+
+    let userWhoMadeReview = [];
+    let reviewDate = [];
+    let rating = [];
+    let comments = [];
+    let m = 0;
+
+    db.all(`SELECT * FROM playlists`, [], async (err, rows) => {
+      if (err) {
+        throw err;
+      }
+      //Add all publci playlist details
+      for (let i = 0; i < rows.length; i++) {
+        if (rows[i].public == '1') {
+          username[k] = rows[i].username
+          playlistName[k] = rows[i].playlistName;
+          numberOfTracks[k] = rows[i].numberOfTracks;
+          playTime[k] = rows[i].playTime;
+          description[k] = rows[i].description;
+          found = true;
+          k++;
+        }
+      }
+    });
+
+    db.all('SELECT * FROM playlistTracks', [], async (err, rows) => {
+      if (err) {
+        throw err;
+      }
+
+      for (let i = 0; i < rows.length; i++) {
+        for (let j = 0; j < playlistName.length; j++) {
+          if (rows[i].playlistName == playlistName[j] && rows[i].username == username[j] && rows[i].hidden != '1') {
+            trackID[l] = rows[i].trackID;
+            trackName[l] = rows[i].trackName;
+            trackPlayTime[l] = rows[i].playTime;
+            albumName[l] = rows[i].albumName;
+            artistName[l] = rows[i].artistName;
+            l++;
+
+          }
+        }
+      }
+
+    });
+
+    db.all('SELECT * FROM reviews', [], async (err, rows) => {
+
+      for (let i = 0; i < rows.length; i++) {
+        for (let j = 0; j < playlistName.length; j++) {
+          if (rows[i].playlistName == playlistName[j] && rows[i].playlistUsername == username[j]) {
+            userWhoMadeReview[m] = rows[i].username;
+            reviewDate[m] = rows[i].reviewDate;
+            rating[m] = rows[i].rating;
+            comments[m] = rows[i].comments;
+            m++;
+          }
+        }
+      }
+
+      if (!found) {
+        return res.json({ staus: 400, error: "Error" });
+      } else {
+        res.json({ status: 200, message: "found all playlists", username: username, playName: playlistName, noOfTracks: numberOfTracks, playT: playTime, des: description, trackID: trackID, trackName: trackName, trackPlayTime: trackPlayTime, albumName: albumName, artistName: artistName, userMadeReview: userWhoMadeReview, reviewDate: reviewDate, rating: rating, comments: comments });
+      }
+
+    });
+
+  });
 
 
 
