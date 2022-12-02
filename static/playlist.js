@@ -157,17 +157,14 @@ function viewTracks() {
     .then(res => res.json()
       .then(data => {
 
-        if (data.data != undefined) {
-          for (let i = 0; i < data.data.length; i++) {
+        if (data.trackID != undefined) {
+          for (let i = 0; i < data.trackID.length; i++) {
 
-            item.appendChild(document.createTextNode(`Track Id: ${data.data[i].trackID},  Track Name: ${data.data[i].trackName}`));
+            item.appendChild(document.createTextNode(`Track Id: ${data.trackID[i]},  Track Name: ${data.trackName[i]}`));
             item.appendChild(document.createElement('br'));
             item.appendChild(document.createElement('br'));
 
-            console.log(data.data[i]);
-
-           
-
+            console.log(data.trackID[i]);
 
          //for the collapsible
 
@@ -186,10 +183,10 @@ function viewTracks() {
         //populating the drop collapsible with the required info
         var paragraph = document.createElement("p");
         paragraph.innerText = 
-        `Album name: ${data.data[i].albumName}\n
-        Playtime: ${data.data[i].playTime}\n
-        Artist: ${data.data[i].artistName}\n
-        Added by: ${data.data[i].username}
+        `Album name: ${data.albumName[i]}\n
+        Playtime: ${data.playTime[i]}\n
+        Artist: ${data.artistName[i]}\n
+        Added by: ${data.username[i]}
         `;
 
         content.appendChild(paragraph);
