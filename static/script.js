@@ -496,7 +496,7 @@ window.onload = function () {
                 avgRatingsData[i] = data2.ratings;
 
                 if (k < 10) {
-                  item.appendChild(document.createTextNode(`Created By: ${data.username[i]},    Playlist Name: ${data.playName[i]},    Average Rating: ${avgRatingsData[i]}      Number of Tracks: ${data.noOfTracks[i]},            Total Playlist duration: ${data.playT[i]}`));
+                  item.appendChild(document.createTextNode(`Created By: ${data.username[i]},    Playlist Name: ${data.playName[i]},   Average Rating: ${avgRatingsData[i]},    Number of Tracks: ${data.noOfTracks[i]},     Total Playlist duration: ${data.playT[i]}`));
                   item.appendChild(document.createElement('br'));
                   item.appendChild(document.createElement('br'));
                   k++;
