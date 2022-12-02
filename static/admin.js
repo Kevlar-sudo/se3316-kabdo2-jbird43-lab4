@@ -335,6 +335,7 @@ function currentSp(){
 }
 
 const playList = document.getElementById("playsL");
+const playlistsClaims = document.getElementById("playlistsClaims");
 
 //to get all the playlists
 function getPlaylists() {
@@ -349,9 +350,14 @@ function getPlaylists() {
 
         for (let i = 0; i < data.playName.length; i++) {
           //add the new playlist to drop down list
-          var option = document.createElement("option");
-          option.text = data.playName[i];
-          playsL.add(option);
+          var option1 = document.createElement("option");
+          option1.text = data.playName[i];
+          playList.add(option1);
+
+          //for the second playlist select (in claims)
+          var option2 = document.createElement("option");
+          option2.text = data.playName[i];
+          playlistsClaims.add(option2);
         }
 
       }));
@@ -454,3 +460,120 @@ function getReviews(){
       
           .catch()
         };
+
+
+//front end for creating claims
+
+function createClaim(){
+        
+
+  const reviewId = {
+    reviewId: document.getElementById("reviewsL").value
+  }
+  console.log(reviewId);
+
+  fetch("/api/auth/reviews/show", {
+    method: 'PUT',
+    headers: { 'Content-type': 'application/json' },
+    body: JSON.stringify(reviewId),
+  })
+    .then(res => res.json()
+      .then(data => {
+        if (data.status != 400) {
+          console.log(data);
+          console.log("successfully made the review visible");
+          //do something
+
+        } else {
+          return;
+        }
+      }))
+
+    .catch()
+  };
+
+
+  //getting reviews for this specific playlist selection in claims
+
+  document.getElementById("showReviewsClaims").addEventListener('click',getReviewsClaims);
+
+const reviewsClaims = document.getElementById("reviewsClaims");
+
+function getReviewsClaims(){
+  
+  fetch(`/api/auth/reviews/${document.getElementById("playlistsClaims").value}`, {
+    method: 'GET',
+    
+  })
+    .then(res => res.json()
+      .then(data => {
+        if (data.status != 400) {
+          console.log(data);
+          console.log(data.data.length);
+          for(x =0; x<data.data.length;x++){
+            //do something
+            console.log(data.data[x].username+" ON "+data.data[x].reviewDate+" RATED "+data.data[x].rating);
+            var revOption = document.createElement("option");
+            revOption.text = data.data[x].reviewId;
+            reviewsClaims.add(revOption);
+
+          }
+          
+
+        } else {
+          return;
+        }
+      }))
+
+    .catch()
+}
+
+//the function for submitting claims by the admin
+document.getElementById("writeClaim").addEventListener('click',submitClaim);
+
+
+function submitClaim(){
+
+  //checking which type of claim we are making 
+  var typeSelected;
+
+
+  if (document.getElementById("takedownReq").checked == true) {
+    typeSelected = "Takedown Request";
+  } else if (document.getElementById("infringeNotice").checked == true) {
+    typeSelected = "Infringement Notice";
+  } else if (document.getElementById("counterClaim").checked == true) {
+    typeSelected = "Counter Claim";
+  } else {
+    typeSelected = "Unspecified Claim";
+  }
+
+
+
+
+  const claimInfo = {
+    type: typeSelected,
+    playlistName: document.getElementById("playlistsClaims").value,
+    reviewId: document.getElementById("reviewsClaims").value
+  }
+  console.log(claimInfo);
+
+  fetch("/api/auth/claim", {
+    method: 'POST',
+    headers: { 'Content-type': 'application/json' },
+    body: JSON.stringify(claimInfo),
+  })
+    .then(res => res.json()
+      .then(data => {
+        if (data.status != 400) {
+          console.log(data);
+          console.log("successfully submitted the claim");
+          //do something
+
+        } else {
+          return;
+        }
+      }))
+
+    .catch()
+  };
