@@ -171,7 +171,7 @@ router.delete('/playlist', verify, (req, res) => {
         }
         if (exist) {
             //Delete tracks in playlist
-            db.run(`DELETE FROM playlistTracks WHERE username=? AND playlistName=?`, username, playlistName, (err) => {
+            db.run(`DELETE FROM reviews WHERE playlistUsername=? AND playlistName=?`, username, playlistName, (err) => {
                 if (err) return res.json({ status: 300, success: false, error: err });
 
                 res.json({ status: 200, success: true });
@@ -179,10 +179,18 @@ router.delete('/playlist', verify, (req, res) => {
 
             });
 
+            //Delete review
             db.run(`DELETE FROM playlists WHERE username=? AND playlistName=?`, username, playlistName, (err) => {
                 if (err) return res.json({ status: 300, success: false, error: err });
                 console.log("successful delete");
             });
+
+            //Delete playlist
+            db.run(`DELETE FROM playlists WHERE username=? AND playlistName=?`, username, playlistName, (err) => {
+                if (err) return res.json({ status: 300, success: false, error: err });
+                console.log("successful delete");
+            });
+
 
 
         } else {
@@ -221,14 +229,14 @@ router.put('/playlist/track', verify, (req, res) => {
             }
         }
 
+        console.log(rows[index].track_duration);
+
         //Convert time to miliseconds of all tracks in playlist
         let regExTime = /([0-9][0-9]):([0-9][0-9])/;
         let regExTimeArr = regExTime.exec(rows[index].track_duration);
 
         let timeMin = regExTimeArr[1] * 60 * 1000;
         let timeSec = regExTimeArr[2] * 1000;
-
-        tempTime = timeMin + timeSec;
 
         if (exist) {
             db.run(`INSERT INTO playlistTracks(username, playlistName, trackID, trackName, playTime, albumName, artistName) VALUES(?,?,?,?,?,?,?)`, [username, playlistName, rows[index].track_id, rows[index].track_title, rows[index].track_duration, rows[index].album_title, rows[index].artist_name], function (err) {
@@ -243,12 +251,32 @@ router.put('/playlist/track', verify, (req, res) => {
             db.all(`SELECT * from playlists`, [], async (err, rows) => {
                 for (let i = 0; i < rows.length; i++) {
                     if (rows[i].username == username && rows[i].playlistName == playlistName) {
-                       // let regExTimeArr = regExTime.exec(rows[i].playTime);
-                      //  let timeMin2 = regExTimeArr[1] * 60 * 1000;
-                       // let timeSec2 = regExTimeArr[2] * 1000;
+
                         trackCount = parseInt(rows[i].numberOfTracks) + 1;
-                        totalPlayTime = tempTime;
-                        totalPlayTime = totalPlayTime/60000
+                        console.log(rows[i].playTime);
+
+                        if (rows[i].playTime != '0') {
+                            //Convert time to miliseconds of all tracks in playlist
+                            let timeSplit = rows[i].playTime.split(".");
+
+                            let timeMin2 = parseInt(timeSplit[0]) * 60 * 1000;
+                            console.log(timeMin2);
+                            let timeSec2 = parseInt(timeSplit[1]) * 1000;
+                            console.log(timeSec2);
+
+                            tempTime = timeMin + timeSec + timeMin2 + timeSec2;
+
+                            totalPlayTime = tempTime;
+                            console.log(totalPlayTime);
+                            totalPlayTime = (totalPlayTime / 60000).toPrecision(3)
+                            console.log(totalPlayTime);
+                        } else {
+                            tempTime = timeMin + timeSec;
+                            console.log(tempTime);
+                            totalPlayTime = tempTime;
+                            console.log(totalPlayTime);
+                            totalPlayTime = totalPlayTime / 60000
+                        }
                     }
                 }
 
@@ -275,8 +303,12 @@ router.post('/playlist/track', verify, (req, res) => {
 
     let username = req.user._id;
     let playlist = req.body.playlistName
+    let playlistUsername = [];
     let trackID = [];
     let trackName = [];
+    let albumName = [];
+    let playTime = [];
+    let artistName = [];
     let exist = false;
     let k = 0;
 
@@ -288,13 +320,17 @@ router.post('/playlist/track', verify, (req, res) => {
             if (rows[i].username == username && rows[i].playlistName == playlist) {
                 trackID[k] = rows[i].trackID;
                 trackName[k] = rows[i].trackName;
+                albumName[k] = rows[i].albumName;
+                playTime[k] = rows[i].playTime;
+                artistName[k] = rows[i].artistName;
+                playlistUsername[k] = rows[i].username;
                 k++;
                 exist = true;
             }
         }
 
         if (exist) {
-            res.json({ status: 200, data: rows, send: "Great Success My Friend!" });
+            res.json({ status: 200, username: playlistUsername, trackID: trackID, trackName: trackName, albumName: albumName, playTime: playTime, artistName: artistName, send: "Great Success My Friend!" });
         } else {
             return res.json({ status: 400, send: "Playlist or username not found" });
         }
@@ -701,28 +737,28 @@ router.post('/claim', verify, async (req, res) => {
     const claimDate = `${day}-${month}-${year}`;
     const playlistName = req.body.playlistName;
     const reviewId = req.body.reviewId;
-    
-    
-      
+
+
+
     try {
-         // inserting the claim into our db
-         db.run(`INSERT INTO claims(type, date, playlistName, reviewId) VALUES(?,?,?,?)`, [type, claimDate, playlistName, reviewId], function (err) {
+        // inserting the claim into our db
+        db.run(`INSERT INTO claims(type, date, playlistName, reviewId) VALUES(?,?,?,?)`, [type, claimDate, playlistName, reviewId], function (err) {
             if (err) {
                 return res.json({ status: 300, success: false, error: err })
             }
             // console log for confirmation
             console.log(`We have inserted the claim into our databayyyyyse`);
             return res.json({ status: 200, success: true })
-            });
-            } catch (err) {
-                return res.json({ status: 400, send: err });
-            }
+        });
+    } catch (err) {
+        return res.json({ status: 400, send: err });
+    }
 
 });
 
 
 
-    
+
 
 
 
