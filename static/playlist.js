@@ -168,9 +168,60 @@ function viewTracks() {
 
             console.log(data.data[i]);
 
-            //for the youtube button
+           
+
+
+         //for the collapsible
+
+        var collapseButton = document.createElement("button"); 
+
+        var textButt = document.createTextNode("View more info");
+
+        collapseButton.appendChild(textButt);
+
+        collapseButton.setAttribute('class',"collapsible");
+        item.appendChild(collapseButton);
+
+        var content = document.createElement("div");
+        content.setAttribute('class',"content");
+
+        //populating the drop collapsible with the required info
+        var paragraph = document.createElement("p");
+        paragraph.innerText = 
+        `Album name: ${data.data[i].albumName}\n
+        Playtime: ${data.data[i].playTime}\n
+        Artist: ${data.data[i].artistName}\n
+        Added by: ${data.data[i].username}
+        `;
+
+        content.appendChild(paragraph);
+
+
+        //finally append the collapsible box into our resultant div
+        item.appendChild(content);
+        item.appendChild(document.createElement("br"));
+        item.appendChild(document.createElement("br"));
+
+        //the collapsible function
+        //for the collapsibles (view more info on search result)
+        
+        
+        collapseButton.addEventListener("click", function() {
+        this.classList.toggle("active");
+        
+        var content = this.nextElementSibling;
+        if (content.style.display === "block") {
+        content.style.display = "none";
+        } else {
+        content.style.display = "block";
+        }
+        });
+
+        
+        //for the youtube button
+         
             // creating button element
-             var youtubeButton = document.createElement("button");
+            var youtubeButton = document.createElement("button");
 
             //setting its id
              youtubeButton.setAttribute('id',"button"+i);
@@ -196,6 +247,12 @@ function viewTracks() {
               //we use a query youtube search, we convert the handle and artistN textNodes into strings and then slice them appropriately to extract our wanted data
               window.open("https://www.youtube.com/results?search_query="+data.data[i].trackName+" by "+data.data[i].artistName, '_blank');
           });
+
+
+
+
+
+          
 
 
           }
