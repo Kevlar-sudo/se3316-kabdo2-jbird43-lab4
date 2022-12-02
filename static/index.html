@@ -1,75 +1,84 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="utf-8">
-<title>SE3316 Lab4</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="utf-8">
+    <title>SE3316 Lab4</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 
-<div class="topnav">
-    <a class="active" href="index.html">Home</a>
-    <a href="login.html">Login</a>
-    <a href="playlist.html">Playlists</a>
-    <a href="dmca.txt">DMCA Policy</a>
-    <a href="aup.txt">AUP Policy</a>
-    <a href="sp.txt">S&P Policy</a>
-    <b id="currentUser">Guest</b>
-    <a href="admin.html" id="adminControl">Admin Control</a>
-  </div>
+    <div class="topnav">
+        <a class="active" href="index.html">Home</a>
+        <a href="login.html">Login</a>
+        <a href="playlist.html">Playlists</a>
+        <a href="dmca.txt">DMCA Policy</a>
+        <a href="aup.txt">AUP Policy</a>
+        <a href="sp.txt">S&P Policy</a>
+        <b id="currentUser">Guest</b>
+        <a href="admin.html" id="adminControl">Admin Control</a>
+    </div>
 
 
-<!--to add some space betweeb divs-->
-<br></br>
-<br></br>
+    <!--to add some space betweeb divs-->
+    <br></br>
+    <br></br>
 
-<h3>Search for music tracks</h3>
+    <h3>Search for music tracks</h3>
 
-<!--Adding the search bar for track names + albums-->
-<div class="firstSearch">
-    <input id="searchBarTracks" type="text"
-    name="searchBar" placeholder="Enter track or album name" maxlength="20">
-    <button id="searchButtonTracks" >🔎︎</button>
-</div>
+    <!--Adding the search bar for track names + albums-->
+    <div class="firstSearch">
+        <input id="searchBarTracks" type="text" name="searchBar" placeholder="Enter track or album name" maxlength="20">
+        <button id="searchButtonTracks">🔎︎</button>
+    </div>
 
-<!--Adding a search bar for album names-->
-<h3>Search for artists</h3>
-<div class="thirdSearch">
-    <input id="searchBarArtist" type="text"
-    name="searchBar" placeholder="Enter the artist's name" maxlength="20">
-    <button id="searchButtonArtist" >🔎︎</button>
-</div>
+    <!--Adding a search bar for album names-->
+    <h3>Search for artists</h3>
+    <div class="thirdSearch">
+        <input id="searchBarArtist" type="text" name="searchBar" placeholder="Enter the artist's name" maxlength="20">
+        <button id="searchButtonArtist">🔎︎</button>
+    </div>
 
-<div class="intro" id="intro">
-    <h2>Results we found (maximum 5) <button id="closeBtn" >Close</button></h2>
-    <div id="inventory"></div>
-    <button id="sortArtist" >Sort by artist</button>
-    <button id="sortTrack" >Sort by track</button>
-    <button id="sortAlbum" >Sort by album</button>
-    <button id="sortLength" >Sort by length</button>
-        
-</div>
+    <div class="intro" id="intro">
+        <h2>Results we found (maximum 5) <button id="closeBtn">Close</button></h2>
+        <div id="inventory"></div>
+        <button id="sortArtist">Sort by artist</button>
+        <button id="sortTrack">Sort by track</button>
+        <button id="sortAlbum">Sort by album</button>
+        <button id="sortLength">Sort by length</button>
 
-<br></br>
+    </div>
 
+    <br></br>
 
-<div class="about" id="about">
-    <h3>About this page</h3>
-    <p>Hello and welcome to Kevin and Jack's final project for their web development class :)</p>
-    <p>We essentially have to remake spotify and include all it's bells and whistles.</p>
-    <p>Please have a look around and try out some of the site's features.</p>
-    <p>Note: interacting with playlists is limited to logged in users.</p>
+    <div id="pulbicPlaylists">
+        <h3>Public Playlists</h2>
+        <ul id="listPublicPlaylists">
 
 
-</div>
+        </ul>
+
+    </div>
+
+    <div class="about" id="about">
+        <h3>About this page</h3>
+        <p>Hello and welcome to Kevin and Jack's final project for their web development class :)</p>
+        <p>We essentially have to remake spotify and include all it's bells and whistles.</p>
+        <p>Please have a look around and try out some of the site's features.</p>
+        <p>Note: interacting with playlists is limited to logged in users.</p>
 
 
-<br></br>
-<br></br>
-<br></br>
-<br></br>
-<div id="bottom">SE3316-Lab-4 By Kevin Abdo & Jack Bird ©</div>
-<script defer src="script.js"></script>
+    </div>
+
+
+    <br></br>
+    <br></br>
+    <br></br>
+    <br></br>
+    <div id="bottom">SE3316-Lab-4 By Kevin Abdo & Jack Bird ©</div>
+    <script defer src="script.js"></script>
 </body>
+
 </html>
