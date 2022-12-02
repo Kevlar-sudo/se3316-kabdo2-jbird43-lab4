@@ -34,7 +34,8 @@ function createTablePlaylist(db) {
     numberOfTracks           VARCHAR(20),
     playTime                 VARCHAR(20),
     public                   VARCHAR(1),
-    description              VARCHAR(1000)
+    description              VARCHAR(1000),
+    lastModified             VARCHAR(100)
     )
     `
     );
