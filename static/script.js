@@ -455,11 +455,9 @@ window.onload = function () {
     .catch()
 
 
-};
 
-//Loading public playlists
-window.onload = function () {
 
+  //Loading public playlists
   const playlistList = document.getElementById('listPublicPlaylists');
   const item = document.createElement('li');
 
@@ -599,7 +597,8 @@ window.onload = function () {
 
   playlistList.appendChild(item);
 
-}
+};
+
 
 
 
