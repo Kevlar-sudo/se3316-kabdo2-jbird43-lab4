@@ -157,8 +157,6 @@ function viewTracks() {
     .then(res => res.json()
       .then(data => {
 
-        console.log(data.data.length);
-        console.log(data.data[0]);
         if (data.data != undefined) {
           for (let i = 0; i < data.data.length; i++) {
 
