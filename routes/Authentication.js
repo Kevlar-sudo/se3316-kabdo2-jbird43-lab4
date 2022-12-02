@@ -171,7 +171,7 @@ router.delete('/playlist', verify, (req, res) => {
         }
         if (exist) {
             //Delete tracks in playlist
-            db.run(`DELETE FROM playlistTracks WHERE username=? AND playlistName=?`, username, playlistName, (err) => {
+            db.run(`DELETE FROM reviews WHERE playlistUsername=? AND playlistName=?`, username, playlistName, (err) => {
                 if (err) return res.json({ status: 300, success: false, error: err });
 
                 res.json({ status: 200, success: true });
@@ -179,10 +179,18 @@ router.delete('/playlist', verify, (req, res) => {
 
             });
 
+            //Delete review
             db.run(`DELETE FROM playlists WHERE username=? AND playlistName=?`, username, playlistName, (err) => {
                 if (err) return res.json({ status: 300, success: false, error: err });
                 console.log("successful delete");
             });
+
+            //Delete playlist
+            db.run(`DELETE FROM playlists WHERE username=? AND playlistName=?`, username, playlistName, (err) => {
+                if (err) return res.json({ status: 300, success: false, error: err });
+                console.log("successful delete");
+            });
+
 
 
         } else {
@@ -295,8 +303,12 @@ router.post('/playlist/track', verify, (req, res) => {
 
     let username = req.user._id;
     let playlist = req.body.playlistName
+    let playlistUsername = [];
     let trackID = [];
     let trackName = [];
+    let albumName = [];
+    let playTime = [];
+    let artistName = [];
     let exist = false;
     let k = 0;
 
@@ -308,13 +320,17 @@ router.post('/playlist/track', verify, (req, res) => {
             if (rows[i].username == username && rows[i].playlistName == playlist) {
                 trackID[k] = rows[i].trackID;
                 trackName[k] = rows[i].trackName;
+                albumName[k] = rows[i].albumName;
+                playTime[k] = rows[i].playTime;
+                artistName[k] = rows[i].artistName;
+                playlistUsername[k] = rows[i].username;
                 k++;
                 exist = true;
             }
         }
 
         if (exist) {
-            res.json({ status: 200, data: rows, send: "Great Success My Friend!" });
+            res.json({ status: 200, username: playlistUsername, trackID: trackID, trackName: trackName, albumName: albumName, playTime: playTime, artistName: artistName, send: "Great Success My Friend!" });
         } else {
             return res.json({ status: 400, send: "Playlist or username not found" });
         }
