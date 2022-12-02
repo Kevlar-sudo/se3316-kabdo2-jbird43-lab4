@@ -335,31 +335,25 @@ function currentSp(){
 const playList = document.getElementById("playsL");
 
 //to get all the playlists
-function getPlaylists()
-      {fetch("/api/auth/playlist", {
-        method: 'GET',
-        headers: {
-          
-        },
-      })
-        .then(res => res.json()
-          .then(data => {
-            if (data.status != 400) {
-              
-              for(j =0; j<data.array.length;j++)
-              {console.log(data.array[j]);
-              var playOption = document.createElement("option");
-              playOption.text = data.array[j];
-              playList.add(playOption);
-              
-              }
-    
-            } else {
-              return;
-            }
-          }))
-    
-        .catch()};
+function getPlaylists() {
+  
+  fetch("/api/auth/playlist/public", {
+    method: 'GET',
+
+  })
+    .then(res => res.json()
+      .then(data => {
+        console.log(data.array);
+
+        for (let i = 0; i < data.playName.length; i++) {
+          //add the new playlist to drop down list
+          var option = document.createElement("option");
+          option.text = data.playName[i];
+          playsL.add(option);
+        }
+
+      }));
+      };
 
 //to get all the reviews for that specific playlist
 document.getElementById("showReviews").addEventListener('click',getReviews);
