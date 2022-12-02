@@ -180,7 +180,7 @@ router.delete('/playlist', verify, (req, res) => {
             });
 
             //Delete review
-            db.run(`DELETE FROM playlists WHERE username=? AND playlistName=?`, username, playlistName, (err) => {
+            db.run(`DELETE FROM playlistTracks WHERE username=? AND playlistName=?`, username, playlistName, (err) => {
                 if (err) return res.json({ status: 300, success: false, error: err });
                 console.log("successful delete");
             });
@@ -268,14 +268,14 @@ router.put('/playlist/track', verify, (req, res) => {
 
                             totalPlayTime = tempTime;
                             console.log(totalPlayTime);
-                            totalPlayTime = (totalPlayTime / 60000).toPrecision(3)
+                            totalPlayTime = (totalPlayTime / 60000).toPrecision(3);
                             console.log(totalPlayTime);
                         } else {
                             tempTime = timeMin + timeSec;
                             console.log(tempTime);
                             totalPlayTime = tempTime;
                             console.log(totalPlayTime);
-                            totalPlayTime = totalPlayTime / 60000
+                            totalPlayTime = (totalPlayTime / 60000).toPrecision(3);
                         }
                     }
                 }
