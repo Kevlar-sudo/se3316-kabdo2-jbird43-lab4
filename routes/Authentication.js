@@ -203,8 +203,10 @@ router.put('/playlist/track', verify, (req, res) => {
     const trackID = req.body.trackID;
     const playlistName = req.body.playlistName;
     let index = 0;
+    let trackCount = 0;
+    let tempTime = 0;
+    let trackDuration = 0;
     let exist = false;
-
 
     // console.log(trackID);
     db.all(`SELECT * FROM tracks`, [], async (err, rows) => {
@@ -219,8 +221,17 @@ router.put('/playlist/track', verify, (req, res) => {
             }
         }
 
+        //Convert time to miliseconds of all tracks in playlist
+        let regExTime = /([0-9][0-9]):([0-9][0-9])/;
+        let regExTimeArr = regExTime.exec(rows[index].track_duration);
+
+        let timeMin = regExTimeArr[1] * 60 * 1000;
+        let timeSec = regExTimeArr[2] * 1000;
+
+        tempTime = timeMin + timeSec;
+
         if (exist) {
-            db.run(`INSERT INTO playlistTracks(username, playlistName, trackID, trackName, playTime, albumName, artistName) VALUES(?,?,?,?,?,?,?)`, [username, playlistName, rows[index].track_id, rows[index].track_title, rows[index].track_duration,rows[index].album_title,rows[index].artist_name], function (err) {
+            db.run(`INSERT INTO playlistTracks(username, playlistName, trackID, trackName, playTime, albumName, artistName) VALUES(?,?,?,?,?,?,?)`, [username, playlistName, rows[index].track_id, rows[index].track_title, rows[index].track_duration, rows[index].album_title, rows[index].artist_name], function (err) {
                 if (err) {
                     return res.json({ status: 300, success: false, error: err })
                 }
@@ -228,10 +239,33 @@ router.put('/playlist/track', verify, (req, res) => {
                 console.log(`A row has been inserted with rowid ${this.lastID}`);
                 res.json({ status: 200, success: true })
             });
+
+            db.all(`SELECT * from playlists`, [], async (err, rows) => {
+                for (let i = 0; i < rows.length; i++) {
+                    if (rows[i].username == username && rows[i].playlistName == playlistName) {
+                       // let regExTimeArr = regExTime.exec(rows[i].playTime);
+                      //  let timeMin2 = regExTimeArr[1] * 60 * 1000;
+                       // let timeSec2 = regExTimeArr[2] * 1000;
+                        trackCount = parseInt(rows[i].numberOfTracks) + 1;
+                        totalPlayTime = tempTime;
+                        totalPlayTime = totalPlayTime/60000
+                    }
+                }
+
+                db.run('UPDATE playlists SET numberOfTracks = ? WHERE userName = ? AND playlistName = ?', trackCount.toString(), username, playlistName, (err) => {
+                    if (err) return res.json({ status: 300, success: false, error: err });
+
+                });
+
+                db.run("UPDATE playlists SET playTime = ? WHERE username = ? AND playlistName = ?", totalPlayTime.toString(), username, playlistName, (err) => {
+                    if (err) return res.json({ status: 300, success: false, error: err });
+                });
+            });
         } else {
             console.log("Track with that id does not exist");
             return res.json({ status: 400, send: "Track does not exist" })
         }
+
     });
 
 
@@ -260,7 +294,7 @@ router.post('/playlist/track', verify, (req, res) => {
         }
 
         if (exist) {
-            res.json({ status: 200, data:rows, send: "Great Success My Friend!" });
+            res.json({ status: 200, data: rows, send: "Great Success My Friend!" });
         } else {
             return res.json({ status: 400, send: "Playlist or username not found" });
         }
@@ -562,98 +596,98 @@ router.post('/activate', verify, async (req, res) => {
 //getting all reviews for a specific playlist
 router.get("/reviews/:playlistname", verify, (req, res) => {
 
-        try {
+    try {
 
-            sql = `SELECT * FROM 'reviews' WHERE playlistName = '${req.params.playlistname}'`;
-            db.all(sql, [], (err, rows) => {
-                if (err) return res.json({ status: 300, success: false, error: err });
-    
-                if (rows.length < 1)
-                    return res.json({ status: 300, success: false, error: "No match" });
-    
-                return res.json({ status: 200, data: rows, success: true });
-            });
-        } catch (error) {
-            return res.json({
-                status: 400,
-                success: false,
-            });
-        }
-    });
+        sql = `SELECT * FROM 'reviews' WHERE playlistName = '${req.params.playlistname}'`;
+        db.all(sql, [], (err, rows) => {
+            if (err) return res.json({ status: 300, success: false, error: err });
 
-    //route for hiding a review
-    router.put('/reviews/hide', verify, async (req, res) => {
+            if (rows.length < 1)
+                return res.json({ status: 300, success: false, error: "No match" });
 
-        
-        const {
-            reviewId
-        } = req.body;
-    
-    
-                try {
-                    // set the deactivated column for the account to 0
-                    db.run(`UPDATE reviews SET hidden = 1 WHERE reviewId = '${reviewId}'`, [], function (err) {
-                        if (err) {
-                            return res.json({ status: 300, success: false, error: err })
-                        }
-                        // console log for confirmation
-                        console.log(`We have updated visibility of the review`);
-                        return res.json({ status: 200, success: true })
-                    });
-                } catch (err) {
-                    return res.json({ status: 400, send: err });
-                }
-    
-    });
-
-        //route for hiding a review
-    router.put('/reviews/hide', verify, async (req, res) => {
-
-        
-        const {
-            reviewId
-        } = req.body;
-    
-    
-                try {
-                    // set the deactivated column for the account to 0
-                    db.run(`UPDATE reviews SET hidden = 1 WHERE reviewId = '${reviewId}'`, [], function (err) {
-                        if (err) {
-                            return res.json({ status: 300, success: false, error: err })
-                        }
-                        // console log for confirmation
-                        console.log(`We have updated visibility of the review`);
-                        return res.json({ status: 200, success: true })
-                    });
-                } catch (err) {
-                    return res.json({ status: 400, send: err });
-                }
-    
-    });
-        //route for showing a review
-        router.put('/reviews/show', verify, async (req, res) => {
-
-        
-            const {
-                reviewId
-            } = req.body;
-        
-        
-                    try {
-                        // set the deactivated column for the account to 0
-                        db.run(`UPDATE reviews SET hidden = 0 WHERE reviewId = '${reviewId}'`, [], function (err) {
-                            if (err) {
-                                return res.json({ status: 300, success: false, error: err })
-                            }
-                            // console log for confirmation
-                            console.log(`We have updated visibility of the review`);
-                            return res.json({ status: 200, success: true })
-                        });
-                    } catch (err) {
-                        return res.json({ status: 400, send: err });
-                    }
-        
+            return res.json({ status: 200, data: rows, success: true });
         });
+    } catch (error) {
+        return res.json({
+            status: 400,
+            success: false,
+        });
+    }
+});
+
+//route for hiding a review
+router.put('/reviews/hide', verify, async (req, res) => {
+
+
+    const {
+        reviewId
+    } = req.body;
+
+
+    try {
+        // set the deactivated column for the account to 0
+        db.run(`UPDATE reviews SET hidden = 1 WHERE reviewId = '${reviewId}'`, [], function (err) {
+            if (err) {
+                return res.json({ status: 300, success: false, error: err })
+            }
+            // console log for confirmation
+            console.log(`We have updated visibility of the review`);
+            return res.json({ status: 200, success: true })
+        });
+    } catch (err) {
+        return res.json({ status: 400, send: err });
+    }
+
+});
+
+//route for hiding a review
+router.put('/reviews/hide', verify, async (req, res) => {
+
+
+    const {
+        reviewId
+    } = req.body;
+
+
+    try {
+        // set the deactivated column for the account to 0
+        db.run(`UPDATE reviews SET hidden = 1 WHERE reviewId = '${reviewId}'`, [], function (err) {
+            if (err) {
+                return res.json({ status: 300, success: false, error: err })
+            }
+            // console log for confirmation
+            console.log(`We have updated visibility of the review`);
+            return res.json({ status: 200, success: true })
+        });
+    } catch (err) {
+        return res.json({ status: 400, send: err });
+    }
+
+});
+//route for showing a review
+router.put('/reviews/show', verify, async (req, res) => {
+
+
+    const {
+        reviewId
+    } = req.body;
+
+
+    try {
+        // set the deactivated column for the account to 0
+        db.run(`UPDATE reviews SET hidden = 0 WHERE reviewId = '${reviewId}'`, [], function (err) {
+            if (err) {
+                return res.json({ status: 300, success: false, error: err })
+            }
+            // console log for confirmation
+            console.log(`We have updated visibility of the review`);
+            return res.json({ status: 200, success: true })
+        });
+    } catch (err) {
+        return res.json({ status: 400, send: err });
+    }
+
+});
 
 
 

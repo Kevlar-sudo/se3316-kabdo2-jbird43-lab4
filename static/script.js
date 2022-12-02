@@ -457,7 +457,7 @@ window.onload = function () {
 
 };
 
-
+//Loading public playlists
 window.onload = function () {
 
   const playlistList = document.getElementById('listPublicPlaylists');
@@ -494,13 +494,15 @@ window.onload = function () {
               .then(data2 => {
                 console.log(data2.ratings);
                 avgRatingsData[i] = data2.ratings;
-                k++;
 
-
-
-                item.appendChild(document.createTextNode(`Created By: ${data.username[i]},    Playlist Name: ${data.playName[i]},    Ratings: ${avgRatingsData[i]}`));
-                item.appendChild(document.createElement('br'));
-                item.appendChild(document.createElement('br'));
+                if (k < 10) {
+                  item.appendChild(document.createTextNode(`Created By: ${data.username[i]},    Playlist Name: ${data.playName[i]},    Average Rating: ${avgRatingsData[i]}      Number of Tracks: ${data.noOfTracks[i]},            Total Playlist duration: ${data.playT[i]}`));
+                  item.appendChild(document.createElement('br'));
+                  item.appendChild(document.createElement('br'));
+                  k++;
+                }else{
+                  return;
+                }
               }));
         }
       }));
