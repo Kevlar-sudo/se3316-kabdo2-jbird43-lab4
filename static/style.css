@@ -195,3 +195,15 @@ p{
     text-decoration: none;
     font-size: 18px;
   }
+
+  .publicPlaylists{
+    background-color: rgb(171, 184, 184);
+    border-radius: 25px;
+    border: 2px solid #0d0e0d;
+    padding: 20px;
+    
+}
+
+ul {
+  list-style-type: none;
+}

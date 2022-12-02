@@ -476,6 +476,10 @@ window.onload = function () {
   })
     .then(res => res.json()
       .then(data => {
+        console.log(data);
+        var index =0;
+        var totalLength =0;
+        
 
         for (let i = 0; i < data.playName.length; i++) {
           let reviews = {
@@ -493,10 +497,96 @@ window.onload = function () {
             .then(res => res.json()
               .then(data2 => {
                 console.log(data2.ratings);
+
+
+
+                console.log(`Number of Tracks: ${data.noOfTracks[i]}`);
+
+
+                totalLength = totalLength + parseInt(data.noOfTracks[i]);
+                
+                
+                var playListTracks = [];
+                //for getting individual tracks
+                for(j = index; j<totalLength; j++){
+                  
+                  
+                  playListTracks.push(data.trackName[j]);
+                }
+                index = index + parseInt(data.noOfTracks[i]) ;
+
+
+                console.log(`Tracks for playlist ${i} are ${playListTracks}`)
+
+
+
                 avgRatingsData[i] = data2.ratings;
 
                 if (k < 10) {
                   item.appendChild(document.createTextNode(`Created By: ${data.username[i]},    Playlist Name: ${data.playName[i]},    Average Rating: ${avgRatingsData[i]}      Number of Tracks: ${data.noOfTracks[i]},            Total Playlist duration: ${data.playT[i]}`));
+
+
+
+                  item.appendChild(document.createElement('br'));
+                  
+                  //for the collapsible button
+
+                  var collapseButton = document.createElement("button");
+
+                  var textButt = document.createTextNode("View more info");
+  
+                  collapseButton.appendChild(textButt);
+  
+                  collapseButton.setAttribute('class', "collapsible");
+                  item.appendChild(collapseButton);
+  
+                  var content = document.createElement("div");
+                  content.setAttribute('class', "content");
+
+
+
+                  //populating the collapsible
+                  //populating the drop collapsible with the required info
+                  var paragraph = document.createElement("p");
+
+                  
+
+                  var ourText = 
+                  `
+                  Description: ${data.des[i]}\n\n
+                  Songs in playlist: \n
+                  `;
+
+                  for(k =0;k<playListTracks.length;k++)
+                  {ourText = ourText+
+                  `${playListTracks[k]}\n
+                  `;}
+
+                  paragraph.innerText = ourText;
+                  content.appendChild(paragraph);
+
+
+                  //finally append the collapsible box into our resultant div
+                  item.appendChild(content);
+
+
+                  //adding the script for the collapse button
+                  collapseButton.addEventListener("click", function () {
+                    this.classList.toggle("active");
+        
+                    var content = this.nextElementSibling;
+                    if (content.style.display === "block") {
+                      content.style.display = "none";
+                    } else {
+                      content.style.display = "block";
+                    }
+                  });
+        
+
+
+
+
+
                   item.appendChild(document.createElement('br'));
                   item.appendChild(document.createElement('br'));
                   k++;
