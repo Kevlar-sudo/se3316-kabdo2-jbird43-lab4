@@ -190,6 +190,7 @@ function viewTracks() {
         `;
 
         content.appendChild(paragraph);
+        
 
 
         //finally append the collapsible box into our resultant div
@@ -240,7 +241,7 @@ function viewTracks() {
             //add a function to the newly created button that searches youtube based on the song name and artist
             youtubeButton.addEventListener("click", function (){
               //we use a query youtube search, we convert the handle and artistN textNodes into strings and then slice them appropriately to extract our wanted data
-              window.open("https://www.youtube.com/results?search_query="+data.data[i].trackName+" by "+data.data[i].artistName, '_blank');
+              window.open("https://www.youtube.com/results?search_query="+data.trackName[i]+" by "+data.artistName[i], '_blank');
           });
 
           }
